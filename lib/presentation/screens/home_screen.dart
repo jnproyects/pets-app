@@ -1,416 +1,119 @@
 import 'package:flutter/material.dart';
-import 'package:pets_app/presentation/widgets/custom_services_button.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:pets_app/config/theme/app_theme.dart';
+import 'package:pets_app/presentation/cubits/cubits.dart';
+import 'package:pets_app/presentation/widgets/widgets.dart';
 
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+
+  static const String routeName = 'home_screen';
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    loadPets();
+  }
+
+  void loadPets() async {
+    await context.read<PetsCubit>().loadPets();
+  }
+
 
   @override
   Widget build(BuildContext context) {
 
+    final pets = context.watch<PetsCubit>().state.pets;
+    // final pets = context.watch<RegisterCubit>().state.pets;
+
+    // final homeScaffoldKey = GlobalKey<ScaffoldState>();
+
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-      
-          children: [
-      
-            Container(
-              width: double.infinity,
-              height: 80,
-              margin: const EdgeInsets.only(
-                top: 47,
-                left: 16,
-                right: 16
+      // key: homeScaffoldKey,
+      appBar: AppBar(
+        elevation: 0,
+        title: const Text('My Pets'),
+      ),
+
+      // drawer: SideMenu( homeScaffoldKey: homeScaffoldKey ),
+
+      body: ( pets.isEmpty )
+        ? const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+              Icon(
+                Icons.folder_outlined,
+                size: 60,
+                color: AppTheme.primary,
               ),
-              padding: const EdgeInsets.all( 16 ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all( Radius.circular( 16 ) ),
+
+              Text(
+                'Aún no tienes mascotas agregadas',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: AppTheme.primary
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+
+            ],
+          ),
+        )
       
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.amberAccent,
-                      borderRadius: BorderRadius.all( Radius.circular( 8 ) )
-                    ),
-                    child: const Icon(
-                      Icons.person_rounded,
-                    ),
-                  ),
-      
-                  const SizedBox(
-                    width: 16,
-                  ),
-      
-                  const Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-      
-      
-                        Text(
-                          'Hi, Juan!',
-                          style: TextStyle(
-                            fontSize: 18
-                          ),
-                        ),
-                  
-                        Text(
-                          'Envigado, Colombia.',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w200
-                          ),
-                        ),
-                      ]
-                    
-                    ),
-                  ),
-      
-                  
-      
-                  IconButton(
-                    onPressed: (){}, 
-                    icon: const Icon(
-                      Icons.search
-                    )
-                  ),
-      
-                  IconButton(
-                    onPressed: (){}, 
-                    icon: const Icon(
-                      Icons.notifications
-                    )
-                  ),
-      
-      
-                ]
-              )
-            ),
-      
-      
-      
-            Container(
-              width: double.infinity,
-              height: 190,
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all( 16 ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all( Radius.circular( 16 ) ),
+        : ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: pets.length,
+          itemBuilder: ( _, index) {
+
+            final pet = pets[index];
+
+            return GestureDetector(
+              onTap: () {
+                context.push(
+                  '/pet-details/${ pet.id }'
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CustomCard(
+                  imageUrl: ( pet.images.isNotEmpty ) ? pet.images.first : 'assets/no-image.png',
+                  name: pet.name,
+                ),
               ),
-      
-              child: Column(
-                
-                children: [
-            
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      
-                      const Text(
-                        'Your Pets',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-            
-                      Container(
-                        width: 58,
-                        height: 34,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'See All',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            
-                            ),
-                          ),
-                        ),
-                      ),
-            
-                    ],
-                  ),
-      
-                  const SizedBox( height:  16 ),
-            
-                  Row(
-                    children: [
-                      
-                      Column(
-                        children: [
-      
-                          Container(
-                            width: 60,
-                            height: 60,
-                            margin: const EdgeInsets.only(bottom: 15),
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color: Colors.yellow[100],
-                              borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: Icon(
-                              Icons.add_circle,
-                              color: Colors.yellow[600],
-                            ),
-                          ),
-      
-                          const Text(
-                            'Add Pet',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600
-                            ),
-                          ),
-      
-                        ],
-                      ),
-      
-                      const SizedBox( width: 16,),
-      
-                      Column(
-                        children: [
-      
-                          Container(
-                            width: 60,
-                            height: 60,
-                            margin: const EdgeInsets.only(bottom: 15),
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color: Colors.blue[100],
-                              borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: const Icon(
-                              Icons.adb,
-                              color: Colors.green,
-                              size: 30,
-                            ),
-                          ),
-      
-                          const Text(
-                            'Pet 1',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600
-                            ),
-                          ),
-                          
-                        ],
-                      ),
-      
-                      
-                      const SizedBox( width: 16,),
-      
-                      Column(
-                        children: [
-      
-                          Container(
-                            width: 60,
-                            height: 60,
-                            margin: const EdgeInsets.only(bottom: 15),
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color: Colors.blue[100],
-                              borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: const Icon(
-                              Icons.adb,
-                              color: Colors.red,
-                              size: 30
-                            ),
-                          ),
-      
-                          const Text(
-                            'Pet 2',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600
-                            ),
-                          ),
-                          
-                        ],
-                      ),
-      
-                      
-                      const SizedBox( width: 16,),
-      
-                      Column(
-                        children: [
-      
-                          Container(
-                            width: 60,
-                            height: 60,
-                            margin: const EdgeInsets.only(bottom: 15),
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color: Colors.blue[100],
-                              borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: const Icon(
-                              Icons.adb,
-                              color: Colors.purple,
-                              size: 30
-                            ),
-                          ),
-      
-                          const Text(
-                            'Pet 3',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600
-                            ),
-                          ),
-                          
-                        ],
-                      ),
-            
-            
-                    ],
-                  ),
-            
-                ],
-              ),
-            ),
-      
-            
-      
-            Container(
-              width: double.infinity,
-              height: 340,
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all( 16 ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all( Radius.circular( 16 ) ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+            );
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      
-                      const Text(
-                        'Services',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-            
-                      Container(
-                        width: 58,
-                        height: 34,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'See All',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            
-                            ),
-                          ),
-                        ),
-                      ),
-            
-                    ],
-                  ),
-
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      
-                      CustomServicesButton(),
-
-                      CustomServicesButton(),
-
-                    ],
-                  ),
-
-                  // SizedBox( height: 16,),
-
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      
-                      CustomServicesButton(),
-
-                      CustomServicesButton(),
-
-                    ],
-                  ),
-
-
-
-                ],
-              ),
-            )
-      
-      
-      
-          ]
+          },
         ),
+
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          context.push('/add-pet');
+        },
+        label: const Text('Add Pet'),
+        icon: const Icon( Icons.add ),
+        backgroundColor: AppTheme.primary,
       ),
-
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            label: 'Home',
-            icon: Icon(
-              Icons.home
-            )
-          ),
-
-          // BottomNavigationBarItem(
-          //   label: 'Network',
-          //   icon: Icon(
-          //     Icons.mark_chat_unread_sharp
-          //   )
-          // ),
-
-          BottomNavigationBarItem(
-            label: 'Store',
-            icon: Icon(
-              Icons.store_outlined
-            )
-          ),
-
-          // BottomNavigationBarItem(
-          //   label: 'Adopt',
-          //   icon: Icon(
-          //     Icons.open_with_rounded
-          //   )
-          // ),
-
-          BottomNavigationBarItem(
-            label: 'Profile',
-            icon: Icon(
-              Icons.person_pin_rounded
-            )
-          ),
-
-        ]
-      ),
+      
     );
+
+  }
+
+  // @override
+  // bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

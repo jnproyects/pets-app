@@ -1,0 +1,61 @@
+part of 'register_cubit.dart';
+
+// enum FormzSubmissionStatus { initial, validating, valid, posting, success, failure }
+enum FormzSubmissionStatus { initial, validating, valid, posting }
+
+class RegisterFormState extends Equatable {
+
+  final FormzSubmissionStatus formStatus;
+  final bool isValid;
+  final Name name;
+  final Race race;
+  final Age age;
+  final Sex sex;
+  final Specie specie;
+  final Size size;
+  final bool? vaccines;
+  final List<String> images;
+
+  const RegisterFormState({
+    this.formStatus = FormzSubmissionStatus.initial, 
+    this.isValid = false,
+    this.name = const Name.pure(),
+    this.race = const Race.pure(),
+    this.age = const Age.pure(),
+    this.sex = const Sex.pure(),
+    this.specie = const Specie.pure(),
+    this.size = const Size.pure(),
+    this.vaccines,
+    this.images = const[],
+  });
+
+  RegisterFormState copyWith({
+    FormzSubmissionStatus? formStatus,
+    bool? isValid,
+    Name? name,
+    Race? race,
+    Age? age,
+    Sex? sex,
+    Specie? specie,
+    Size? size,
+    bool? vaccines,
+    List<String>? images,
+  }) {
+    return RegisterFormState(
+      formStatus: formStatus ?? this.formStatus,
+      isValid: isValid ?? this.isValid,
+      name: name ?? this.name,
+      race: race ?? this.race,
+      age: age ?? this.age,
+      sex: sex ?? this.sex,
+      specie: specie ?? this.specie,
+      size: size ?? this.size,
+      vaccines: vaccines ?? this.vaccines,
+      images: images ?? this.images,
+    );
+  }
+
+  @override
+  List<Object?> get props => [ formStatus, isValid, name, race, age, sex, specie, size, vaccines, images ];
+}
+
