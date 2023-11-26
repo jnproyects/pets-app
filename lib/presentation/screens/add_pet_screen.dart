@@ -13,6 +13,8 @@ class AddPetScreen extends StatelessWidget {
 
   static const String routeName = 'add_pet_screen';
 
+  const AddPetScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,12 +22,6 @@ class AddPetScreen extends StatelessWidget {
         create: (context) => RegisterCubit(),
         child: const _AddPetForm(),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => context.go('/'),
-      //   child: const Icon(
-      //     FontAwesomeIcons.xmark
-      //   )
-      // ),
     );
   }
 }
@@ -42,11 +38,13 @@ class _AddPetForm extends StatelessWidget {
     final specie = registerCubit.state.specie;
     final sex = registerCubit.state.sex;
     final petSize = registerCubit.state.size;
-    // final age = registerCubit.state.age;
     final vaccines = registerCubit.state.vaccines;
     final petImages = registerCubit.state.images;
 
     final size = MediaQuery.of(context).size;
+
+    final firstDate = DateTime(DateTime.now().year - 120);
+    final lastDate = DateTime.now();
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -57,7 +55,7 @@ class _AddPetForm extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(top: 50),
               child: const Text(
-                'Agregar Mascota',
+                'Add Pet',
                 style: TextStyle(fontSize: 30),
               ),
             ),
@@ -121,6 +119,36 @@ class _AddPetForm extends StatelessWidget {
 
                     const SizedBox( height: 30 ),
 
+                    // DropdownButtonFormField(
+                    //   icon: Icon( Icons.person_remove ),
+                    //   value: 'Perro',
+                    //   items: const [
+                    //     DropdownMenuItem( value: 'Perro', child: Text('Perro') ),
+                    //     DropdownMenuItem( value: 'Gato', child: Text('Gato') ),
+                    //   ],
+                    //   onChanged: ( value ) => registerCubit.specieChanged( value! )
+                    // ),
+
+                    DropdownMenu(
+                      width: size.width * 0.9,
+                      label: const Text('Especie'),
+                      dropdownMenuEntries: const [
+                        DropdownMenuEntry(
+                          value: 'Perro', 
+                          label: 'Perro'
+                        ),
+                        DropdownMenuEntry(
+                          value: 'Gato', 
+                          label: 'Gato'
+                        )
+                      ],
+                      onSelected: ( value ) => registerCubit.specieChanged( value! ),
+                      errorText: specie.errorMessage,
+                      
+                    ),
+
+                    const SizedBox(height: 15),
+
                     CustomTextFormField(
                       label: 'Nombre',
                       onChanged: ( value ) => registerCubit.nameChanged( value ),
@@ -137,18 +165,26 @@ class _AddPetForm extends StatelessWidget {
 
                     const SizedBox(height: 15),
 
+                    InputDatePickerFormField(
+                      // initialDate: DateTime.now(),
+                      firstDate: firstDate, 
+                      lastDate: lastDate,
+                      acceptEmptyDate: true,
+                      fieldLabelText: 'Birthdate',
+                      onDateSubmitted: ( date ) {
+                        print(date);
+                      },
+                      onDateSaved: ( date ) {
+                        print(date);
+                      },
+                      
+                    ),
+
+                    const SizedBox(height: 15),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-
-                        // CustomTextFormField(
-                        //   label: 'Edad mascota',
-                        //   onChanged: ( value ) => registerCubit.ageChanged( value ),
-                        //   errorMessage: age.errorMessage,
-                        //   keyboardType: TextInputType.number,
-                        // ),
-
-                        const SizedBox(width: 15),
 
                         DropdownMenu(
                           // initialSelection: 'grande',
@@ -172,36 +208,9 @@ class _AddPetForm extends StatelessWidget {
                           
                         ),
 
-                      ],
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-
-                        DropdownMenu(
-                          // initialSelection: 'perro',
-                          label: const Text('Especie'),
-                          dropdownMenuEntries: const [
-                            DropdownMenuEntry(
-                              value: 'Perro', 
-                              label: 'Perro'
-                            ),
-                            DropdownMenuEntry(
-                              value: 'Gato', 
-                              label: 'Gato'
-                            )
-                          ],
-                          onSelected: ( value ) => registerCubit.specieChanged( value! ),
-                          errorText: specie.errorMessage,
-                          
-                        ),
-
                         DropdownMenu(
                           // initialSelection: 'macho',
-                          width: size.width * 0.425,
+                          // width: size.width * 0.425,
                           label: const Text('Sexo'),
                           dropdownMenuEntries: const [
                             DropdownMenuEntry(
@@ -235,9 +244,6 @@ class _AddPetForm extends StatelessWidget {
                     const SizedBox(height: 15),
                     
                     const _ButtonsForm(),
-                    
-
-
                   ],
                 )
               ),
@@ -265,6 +271,9 @@ class _ButtonsForm extends StatelessWidget {
         children: [
     
           ElevatedButton.icon(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all( Colors.grey )
+            ),
             label: const Text('Cancelar'),
             onPressed: () => context.go('/'), 
             icon: const Icon( Icons.cancel )
@@ -273,23 +282,10 @@ class _ButtonsForm extends StatelessWidget {
           const SizedBox( width: 10 ),
     
           ElevatedButton.icon(
-            style: ButtonStyle(
-              // padding: MaterialStateProperty.all(
-              //   EdgeInsets.symmetric(
-              //     horizontal: size.width * 0.15, 
-              //     vertical: 15
-              //   )
-              // ),
-              backgroundColor: MaterialStateProperty.all(Colors.blue),
-              foregroundColor:
-                  MaterialStateProperty.all(Colors.white),
-            ),
             label: const Text('Guardar'),
             icon: const Icon( Icons.save ),
             onPressed: () async {
               
-              //TODO: mostrar alerta segun resultado de registro
-              // final pet = await registerCubit.onSubmit();
               final pet = await context.read<RegisterCubit>().onSubmit();
     
               // el form es válido y retorna una mascota
@@ -301,23 +297,19 @@ class _ButtonsForm extends StatelessWidget {
                 // si el registro fue correcto
                 if ( result ) {
     
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Tu mascota fue registrada!'),
-                      backgroundColor: Colors.green,
-                    ),
-    
+                  NotificationsService.showCustomSnackbar(
+                    context: context, 
+                    mensaje: 'Tu mascota fue registrada!'
                   );
                   
                   context.go('/');
                 } 
                 // error en el registro
                 else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Error al registrar mascota'),
-                      backgroundColor: Colors.red,
-                    ),
+                  NotificationsService.showCustomSnackbar(
+                    context: context, 
+                    mensaje: 'Error al registrar tu mascota',
+                    error: true
                   );
                 }
     

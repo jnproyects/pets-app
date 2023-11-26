@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:pets_app/config/theme/app_theme.dart';
 
 
-
 class CustomCard extends StatelessWidget {
 
   final String imageUrl;
@@ -20,12 +19,13 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final size = MediaQuery.of(context).size;
+
     late ImageProvider imageProvider;
 
     if ( imageUrl.startsWith('/data/') ) {
       imageProvider = FileImage( File(imageUrl) );
     } else {
-      // imageProvider = AssetImage( imageUrl );
       imageProvider = AssetImage( imageUrl );
     }
       
@@ -35,42 +35,63 @@ class CustomCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15)
       ),
-      elevation: 10,
+      elevation: 0,
       shadowColor: AppTheme.primary.withOpacity(0.5),
-      child: Column(
-
-        children: [
-
-          FadeInImage(
-            
-            // image: NetworkImage( imageUrl ),
-            // placeholder: const AssetImage('assets/jar-loading.gif'),
-            // image: AssetImage( imageUrl ),
-            image: imageProvider,
-            placeholder: const AssetImage('assets/footprint-loading.gif'),
-            width: double.infinity,
-            height: 230,
-            fit: BoxFit.cover,
-            fadeInDuration: const Duration(milliseconds: 300),
-          ),
-
-          if ( name != null )
-            Container(
-              alignment: AlignmentDirectional.topCenter,
-              padding: const EdgeInsets.only( right: 20, top: 10, bottom: 10),
-              child: Text(
-                name!,
-                style: const TextStyle(
-                  fontSize: 17,
+      child: SizedBox(
+        width: double.infinity,
+        child: Stack(
+        
+          children: [
+        
+            FadeInImage(
+              image: imageProvider,
+              placeholder: const AssetImage('assets/footprint-loading.gif'),
+              width: double.infinity,
+              height: 350,
+              fit: BoxFit.cover,
+              fadeInDuration: const Duration(milliseconds: 300),
+            ),
+        
+            const Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      Colors.black87
+                    ],
+                    stops: [
+                      0.8, 
+                      1.0
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter
+                  )
                 ),
-              )
-          ),
-
-
-          
-
-        ],
-
+              ),
+            ),
+        
+            if( name != null )
+              Positioned(
+                width: size.width * 0.90,
+                bottom: 15,
+                left: 15,
+                child: SizedBox(
+                  child: Text( 
+                    name!, 
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 25
+                    ),
+                  ),
+                )
+              ),
+        
+          ],
+        
+        ),
       )
     );
   }

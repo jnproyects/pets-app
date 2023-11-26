@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pets_app/config/config.dart';
 
 import 'package:pets_app/domain/entities/pet.dart';
 import 'package:pets_app/presentation/cubits/cubits.dart';
@@ -50,25 +51,34 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
 
     
         body: SafeArea(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            
-            child: Padding(
-              padding: const EdgeInsets.only( top: 50 ),
-              child: ( !petsCubit.state.isEdit ) 
-                // ? _PetDetails( petId: pet.id! )
-                ? _PetDetails( pet: pet )
-                // : _EditPetForm( petId: pet.id! ),
-                : _EditPetForm( pet: pet ),
-            ),
+          child: Stack(
+            children: [
 
+              // const HeaderWaveBottomGradient(),
+
+
+              SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                
+                child: Padding(
+                  padding: const EdgeInsets.only( top: 50 ),
+                  child: ( !petsCubit.state.isEdit ) 
+                    ? _PetDetails( pet: pet )
+                    : _EditPetForm( pet: pet ),
+                ),
+              
+              ),
+            ],
           ),
         ),
     
         floatingActionButton: ( !petsCubit.state.isEdit ) ? FloatingActionButton(
-          onPressed: () => context.go('/'), 
+          onPressed: () => context.go('/'),
+          elevation: 0,
           child: const Icon(
-            Icons.arrow_left_outlined
+            Icons.close,
+            color: Colors.white,
+            size: 25,
           )
         ) : null,
     
@@ -92,24 +102,61 @@ class _PetDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // final Pet pet = context.watch<PetsCubit>().loadPetDetails( petId );
     context.watch<PetsCubit>();
+    // final petsCubit = context.watch<PetsCubit>();
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+
+          // IconButton(
+          //   onPressed: () => context.go('/'),
+          //   icon: const Icon(
+          //     // Icons.close_outlined,
+          //     Icons.arrow_back_ios_new_outlined
+          //   ),
+          //   color: AppTheme.primary,
+          //   iconSize: 40,
+          // ),
           
-          Text(
-            pet.name.toUpperCase(), 
-            style: const TextStyle(
-              fontSize: 30
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              SizedBox(
+                width: 220,
+                child: Text(
+                  pet.name.toUpperCase(), 
+                  style: const TextStyle(
+                    fontSize: 25,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  
+                ),
+              ),
+
+              const SizedBox( width: 15 ),
+
+              IconButton(
+                onPressed: () => context.read<PetsCubit>().isEditingToggle(), 
+                icon: const Icon( Icons.edit, size: 25 ),
+                // color: Colors.amber,
+              ),             
+
+            ],
           ),
+
+          
+
     
           const SizedBox(
-            height: 30,
+            height: 15,
           ),
+
+          
     
           // PetImagesSlideShow(
           //   petImages: ( pet.images.isEmpty ) ? ['assets/no-image.png'] : pet.images
@@ -127,6 +174,8 @@ class _PetDetails extends StatelessWidget {
               fontSize: 20
             ),
           ),
+
+          
     
           const SizedBox(
             height: 10,
@@ -188,16 +237,16 @@ class _PetDetails extends StatelessWidget {
             height: 20,
           ),
     
-          FilledButton.icon(
-            onPressed: (){
-              context.read<PetsCubit>().isEditingToggle();
-            }, 
-            icon: const Icon( Icons.edit ), 
-            label: const Text( 'Edit' ),
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.amber[400])
-            ),
-          ),
+          // FilledButton.icon(
+          //   onPressed: (){
+          //     context.read<PetsCubit>().isEditingToggle();
+          //   }, 
+          //   icon: const Icon( Icons.edit ), 
+          //   label: const Text( 'Edit' ),
+          //   style: ButtonStyle(
+          //     backgroundColor: MaterialStateProperty.all(Colors.amber[400])
+          //   ),
+          // ),
 
           IconButton(
             color: Colors.red[400],
@@ -206,9 +255,27 @@ class _PetDetails extends StatelessWidget {
               size: 35,
             ),
             onPressed: () async {
-              await context.read<PetsCubit>().deletePet( pet.id! );
               
-              context.go('/');
+              
+              final resp = await NotificationsService.showCustomDialog(
+                context: context, 
+                title: 'Are you sure?', 
+                subTitle: 'The information will be permanently deleted.',
+                okButtonText: 'Delete'
+              );
+
+              if ( resp == 'ok' ) {
+                await context.read<PetsCubit>().deletePet( pet.id! );              
+                // await petsCubit.deletePet( pet.id! );   
+
+                context.go('/');
+
+                NotificationsService.showCustomSnackbar(
+                  context: context, 
+                  mensaje: 'Pet information removed'
+                );
+              }
+
             }
           ),
     
@@ -482,7 +549,7 @@ class _ButtonsFormEdit extends StatelessWidget {
             icon: const Icon( Icons.cancel_outlined ), 
             label: const Text( 'Cancel' ),
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.amber[400])
+              // backgroundColor: MaterialStateProperty.all(Colors.amber[400])
             ),
           ),
             
@@ -495,22 +562,16 @@ class _ButtonsFormEdit extends StatelessWidget {
       
               if ( petResp != null ) {
       
-                // final result = await context.read<PetsCubit>().editPet( petResp );
                 final result = await petsCubit.editPet( petResp );
       
                 if ( result ) {
       
-                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Cambios realizados!'),
-                      backgroundColor: Colors.green,
-                    ),
-      
+                  NotificationsService.showCustomSnackbar(
+                    context: context, 
+                    mensaje: 'Cambios realizados!'
                   );
       
-                  // context.read<PetsCubit>().isEditingToggle();
                   petsCubit.isEditingToggle();
-                  // context.go('/');
                   context.push(
                     '/pet-details/${ petResp.id }'
                   );
@@ -518,11 +579,10 @@ class _ButtonsFormEdit extends StatelessWidget {
       
                 } else {
       
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Error al editar los datos'),
-                      backgroundColor: Colors.red,
-                    ),
+                  NotificationsService.showCustomSnackbar(
+                    context: context, 
+                    mensaje: 'Error al editar la información',
+                    error: true
                   );
                   
                 }
@@ -541,7 +601,8 @@ class _ButtonsFormEdit extends StatelessWidget {
             icon: const Icon( Icons.save_outlined ), 
             label: const Text( 'Save' ),
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.green))
+              backgroundColor: MaterialStateProperty.all( AppTheme.primary )
+            )
           ),
 
           const SizedBox( height: 100 ),
