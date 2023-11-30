@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,20 +40,17 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
     return BlocProvider(
       create:  ( _ ) => RegisterCubit(),
       child: Scaffold(
-        
-        // appBar: AppBar(
-        //   title: Text('Pet Name'),
-        // ),
-
-            // padding: const EdgeInsets.only( top: 50),
-
     
         body: SafeArea(
           child: Stack(
             children: [
 
-              // const HeaderWaveBottomGradient(),
-
+              const Positioned(
+                bottom: 0,
+                // left: 10,
+                // right: 10,
+                child: HeaderCuadrado()
+              ),
 
               SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -73,6 +68,7 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
         ),
     
         floatingActionButton: ( !petsCubit.state.isEdit ) ? FloatingActionButton(
+          backgroundColor: const Color(0xFF615AAB),
           onPressed: () => context.go('/'),
           elevation: 0,
           child: const Icon(
@@ -87,23 +83,28 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
   }
 }
 
+enum PetDetailsOptions { edit, delete }
+
 class _PetDetails extends StatelessWidget {
   
-  // final int petId;
   final Pet pet;
 
   const _PetDetails({
     super.key,
-    // required this.petId,
     required this.pet,
   });
-
+  
+  final textStyle =  const TextStyle(
+    fontSize: 20,
+    color: Colors.white
+  );
+  
 
   @override
   Widget build(BuildContext context) {
 
     context.watch<PetsCubit>();
-    // final petsCubit = context.watch<PetsCubit>();
+    context.watch<RegisterCubit>();
 
     return Center(
       child: Column(
@@ -119,57 +120,138 @@ class _PetDetails extends StatelessWidget {
           //   color: AppTheme.primary,
           //   iconSize: 40,
           // ),
+
+          // Container(
+          //   alignment: Alignment.bottomLeft,
+          //   padding: const EdgeInsets.only( left: 10 ),
+          //   margin: const EdgeInsets.only( top: 10),
+          //   child: BackButton(
+          //     style: ButtonStyle(
+          //       iconSize: MaterialStateProperty.all( 30 ),
+          //       iconColor: MaterialStateProperty.all( Colors.black )
+          //     ),
+          //     onPressed: () => context.go('/'),
+          //   ),
+          // ),
+          
           
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
-              SizedBox(
-                width: 220,
-                child: Text(
-                  pet.name.toUpperCase(), 
-                  style: const TextStyle(
-                    fontSize: 25,
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only( left:  15 ),
+                  width: 220,
+                  child: Text(
+                    pet.name.toUpperCase(), 
+                    style: const TextStyle(
+                      fontSize: 25,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  
                 ),
               ),
 
-              const SizedBox( width: 15 ),
+              PopupMenuButton(
+                padding: const EdgeInsets.only( right: 15),
+                itemBuilder: ( context ) => <PopupMenuEntry<PetDetailsOptions>>[
+                  
+                  PopupMenuItem<PetDetailsOptions>(
+                    onTap: () => context.read<PetsCubit>().isEditingToggle(),
+                    value: PetDetailsOptions.edit,
+                    child: const Text('Edit'),
+                  ),
 
-              IconButton(
-                onPressed: () => context.read<PetsCubit>().isEditingToggle(), 
-                icon: const Icon( Icons.edit, size: 25 ),
-                // color: Colors.amber,
-              ),             
+                  PopupMenuItem<PetDetailsOptions>(
+                    onTap: () async {
+
+                      final resp = await NotificationsService.showCustomDialog(
+                        context: context, 
+                        title: 'Are you sure?', 
+                        subTitle: 'The information will be permanently deleted.',
+                        okButtonText: 'Delete'
+                      );
+
+                      if ( resp == 'ok' ) {
+                        await context.read<PetsCubit>().deletePet( pet.id! );              
+                        // await petsCubit.deletePet( pet.id! );   
+
+                        context.go('/');
+
+                        NotificationsService.showCustomSnackbar(
+                          context: context, 
+                          mensaje: 'Pet information removed'
+                        );
+                      }
+                    },
+                    value: PetDetailsOptions.delete,
+                    child: const Text('Delete'),
+                    
+
+                  ),
+                ]
+              ),
+
+              // IconButton(
+              //   onPressed: () => context.read<PetsCubit>().isEditingToggle(), 
+              //   icon: const Icon( Icons.edit, size: 25 ),
+              //   // color: Colors.amber,
+              // ),
+
+              // IconButton(
+              //   color: Colors.red[400],
+              //   icon: const Icon(
+              //     Icons.delete,
+              //     size: 25,
+              //   ),
+              //   onPressed: () async {
+                  
+                  
+              //     final resp = await NotificationsService.showCustomDialog(
+              //       context: context, 
+              //       title: 'Are you sure?', 
+              //       subTitle: 'The information will be permanently deleted.',
+              //       okButtonText: 'Delete'
+              //     );
+
+              //     if ( resp == 'ok' ) {
+              //       await context.read<PetsCubit>().deletePet( pet.id! );              
+              //       // await petsCubit.deletePet( pet.id! );   
+
+              //       context.go('/');
+
+              //       NotificationsService.showCustomSnackbar(
+              //         context: context, 
+              //         mensaje: 'Pet information removed'
+              //       );
+              //     }
+
+              //   }
+              // ),        
 
             ],
           ),
-
-          
-
     
           const SizedBox(
             height: 15,
           ),
 
-          
-  
-          // _ImageGallery(images: pet.images ),
-  
           SizedBox(
             height: 350,
-            width: 600,
-            child: ImageGallery(images: pet.images )
+            // width: 600,
+            child: ImageGallery( images: pet.images )
           ),
 
           Dots(
             cantImages: pet.images.length,
             bulletPrimario: 10,
             bulletSecundario: 8,
+            colorPrimario: const Color.fromARGB(255, 146, 68, 255),
+            colorSecundario: Colors.white,
           ),
     
           const SizedBox(
@@ -177,10 +259,8 @@ class _PetDetails extends StatelessWidget {
           ),
     
           Text(
-            'Raza: ${ pet.race }', 
-            style: const TextStyle(
-              fontSize: 20
-            ),
+            'Race: ${ pet.race }', 
+            style: textStyle,
           ),
 
           
@@ -190,10 +270,8 @@ class _PetDetails extends StatelessWidget {
           ),
     
           Text(
-            'Sexo: ${ pet.sex }', 
-            style: const TextStyle(
-              fontSize: 20
-            ),
+            'Sex: ${ pet.sex }', 
+            style: textStyle
           ),
     
           const SizedBox(
@@ -201,10 +279,8 @@ class _PetDetails extends StatelessWidget {
           ),
     
           Text(
-            'Especie: ${ pet.specie }', 
-            style: const TextStyle(
-              fontSize: 20
-            ),
+            'Specie: ${ pet.specie }', 
+            style: textStyle
           ),
     
           const SizedBox(
@@ -212,37 +288,31 @@ class _PetDetails extends StatelessWidget {
           ),
     
           Text(
-            'Talla: ${ pet.size }', 
-            style: const TextStyle(
-              fontSize: 20
-            ),
+            'Size: ${ pet.size }', 
+            style: textStyle
           ),
     
-          const SizedBox(
-            height: 10,
-          ),
+          // const SizedBox(
+          //   height: 10,
+          // ),
     
-          const Text(
+          // Text(
             // 'Edad: ${ pet.age } meses', 
-            'Edad:', 
-            style: TextStyle(
-              fontSize: 20
-            ),
-          ),
+          //   'Age:', 
+          //   style: textStyle
+          // ),
     
           const SizedBox(
             height: 10,
           ),
     
           Text(
-            'Vacunas: ${ ( pet.vaccines! ) ? 'Sí' : 'No' }', 
-            style: const TextStyle(
-              fontSize: 20
-            ),
+            'Vaccines: ${ ( pet.vaccines! ) ? 'Sí' : 'No' }', 
+            style: textStyle
           ),
     
           const SizedBox(
-            height: 20,
+            height: 90,
           ),
     
           // FilledButton.icon(
@@ -256,41 +326,43 @@ class _PetDetails extends StatelessWidget {
           //   ),
           // ),
 
-          IconButton(
-            color: Colors.red[400],
-            icon: const Icon(
-              Icons.delete,
-              size: 35,
-            ),
-            onPressed: () async {
+          // IconButton(
+          //   color: Colors.red[300],
+          //   icon: const Icon(
+          //     Icons.delete,
+          //     size: 35,
+          //   ),
+          //   onPressed: () async {
               
               
-              final resp = await NotificationsService.showCustomDialog(
-                context: context, 
-                title: 'Are you sure?', 
-                subTitle: 'The information will be permanently deleted.',
-                okButtonText: 'Delete'
-              );
+          //     final resp = await NotificationsService.showCustomDialog(
+          //       context: context, 
+          //       title: 'Are you sure?', 
+          //       subTitle: 'The information will be permanently deleted.',
+          //       okButtonText: 'Delete'
+          //     );
 
-              if ( resp == 'ok' ) {
-                await context.read<PetsCubit>().deletePet( pet.id! );              
-                // await petsCubit.deletePet( pet.id! );   
+          //     if ( resp == 'ok' ) {
+          //       await context.read<PetsCubit>().deletePet( pet.id! );              
+          //       // await petsCubit.deletePet( pet.id! );   
 
-                context.go('/');
+          //       context.go('/');
 
-                NotificationsService.showCustomSnackbar(
-                  context: context, 
-                  mensaje: 'Pet information removed'
-                );
-              }
+          //       NotificationsService.showCustomSnackbar(
+          //         context: context, 
+          //         mensaje: 'Pet information removed'
+          //       );
+          //     }
 
-            }
-          ),
+          //   }
+          // ),
     
         ],
       ),
     );
   }
+
+  
 }
 
 class _EditPetForm extends StatelessWidget {
@@ -387,10 +459,15 @@ class _EditPetForm extends StatelessWidget {
         SizedBox(
           height: 250,
           width: 600,
-          child: _ImageGallery(
+          child: ImageGallery(
             images: ( petImages.isEmpty ) ? [ ...pet.images ] : [ ...petImages ], 
             isEdit: true
           ),
+        ),
+
+        // TODO pendiente
+        Dots(
+          cantImages: ( petImages.isEmpty ) ? pet.images.length : petImages.length
         ),
       
         const SizedBox(height: 10 ),
@@ -556,7 +633,7 @@ class _ButtonsFormEdit extends StatelessWidget {
             }, 
             icon: const Icon( Icons.cancel_outlined ), 
             label: const Text( 'Cancel' ),
-            style: ButtonStyle(
+            style: const ButtonStyle(
               // backgroundColor: MaterialStateProperty.all(Colors.amber[400])
             ),
           ),
@@ -648,115 +725,115 @@ class _ButtonsFormEdit extends StatelessWidget {
 
 
 
-class _ImageGallery extends StatelessWidget {
+// class _ImageGallery extends StatelessWidget {
 
-  final List<String> images;
-  final bool isEdit;
+//   final List<String> images;
+//   final bool isEdit;
 
-  const _ImageGallery({required this.images, this.isEdit = false });
+//   const _ImageGallery({required this.images, this.isEdit = false });
 
-  @override
-  Widget build(BuildContext context) {
+//   @override
+//   Widget build(BuildContext context) {
 
-    if ( images.isEmpty ) {
-      return Padding(
-        padding: const EdgeInsets.symmetric( horizontal: 16 ),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all( Radius.circular(20) ),
-          child: Image.asset(
-            'assets/no-photo.png', 
-            fit: BoxFit.cover
-          )
-        ),
-      );
-    }
+//     if ( images.isEmpty ) {
+//       return Padding(
+//         padding: const EdgeInsets.symmetric( horizontal: 16 ),
+//         child: ClipRRect(
+//           borderRadius: const BorderRadius.all( Radius.circular(20) ),
+//           child: Image.asset(
+//             'assets/no-photo.png', 
+//             fit: BoxFit.cover
+//           )
+//         ),
+//       );
+//     }
 
-    return SizedBox(
-      height: 300,
-      width: double.infinity,
-      child: PageView(
-        scrollDirection: Axis.horizontal,
-        controller: PageController(
-          viewportFraction: 0.85
-        ),
-        children: images.map((imagePath) {
+//     return SizedBox(
+//       height: 300,
+//       width: double.infinity,
+//       child: PageView(
+//         scrollDirection: Axis.horizontal,
+//         controller: PageController(
+//           viewportFraction: 0.85
+//         ),
+//         children: images.map((imagePath) {
           
-          late ImageProvider imageProvider;
+//           late ImageProvider imageProvider;
     
-          if ( imagePath.startsWith('http') ) {
-            imageProvider = NetworkImage( imagePath );
-          } else if ( imagePath.startsWith('/data/') ) {
-            imageProvider = FileImage( File( imagePath ) );
-          } else {
-            imageProvider = AssetImage( imagePath );
-          }
+//           if ( imagePath.startsWith('http') ) {
+//             imageProvider = NetworkImage( imagePath );
+//           } else if ( imagePath.startsWith('/data/') ) {
+//             imageProvider = FileImage( File( imagePath ) );
+//           } else {
+//             imageProvider = AssetImage( imagePath );
+//           }
 
 
-          // si es una edición
-          if ( isEdit ) {
+//           // si es una edición
+//           if ( isEdit ) {
 
-            return Stack(
-              fit: StackFit.expand,
-              children: [
+//             return Stack(
+//               fit: StackFit.expand,
+//               children: [
 
-                Padding(
-                  padding: const EdgeInsets.symmetric( horizontal: 10 ),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    child: FadeInImage(
-                      fit: BoxFit.cover,
-                      placeholder: const AssetImage('assets/footprint-loading.gif'), 
-                      image: imageProvider
-                    ),
-                  ),
-                ),
+//                 Padding(
+//                   padding: const EdgeInsets.symmetric( horizontal: 10 ),
+//                   child: ClipRRect(
+//                     borderRadius: const BorderRadius.all(Radius.circular(10)),
+//                     child: FadeInImage(
+//                       fit: BoxFit.cover,
+//                       placeholder: const AssetImage('assets/footprint-loading.gif'), 
+//                       image: imageProvider
+//                     ),
+//                   ),
+//                 ),
 
-                if ( imagePath != 'assets/no-photo.png' )
+//                 if ( imagePath != 'assets/no-photo.png' )
 
-                  Positioned(
-                    top: 5,
-                    // left: 15,
-                    right: 10,
-                    // bottom: 10,
-                    child: IconButton(
-                      color: Colors.white,
-                      // iconSize: 30,
-                      icon: const Icon(
-                        Icons.delete,
-                        size: 35,
-                      ),
-                      onPressed: (){
-                        context.read<RegisterCubit>().deletePetImage( images: images, imagePath: imagePath );
-                      }
+//                   Positioned(
+//                     top: 5,
+//                     // left: 15,
+//                     right: 10,
+//                     // bottom: 10,
+//                     child: IconButton(
+//                       color: Colors.white,
+//                       // iconSize: 30,
+//                       icon: const Icon(
+//                         Icons.delete,
+//                         size: 35,
+//                       ),
+//                       onPressed: (){
+//                         context.read<RegisterCubit>().deletePetImage( images: images, imagePath: imagePath );
+//                       }
                       
-                    )
-                  )
+//                     )
+//                   )
 
                 
-              ],
-            );
+//               ],
+//             );
 
-          }
+//           }
 
 
-          // si no es edición
-          // if (imagePath == 'assets/no-photo.png') 
-          return Padding(
-            padding: const EdgeInsets.symmetric( horizontal: 10 ),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              child: FadeInImage(
-                fit: BoxFit.cover,
-                placeholder: const AssetImage('assets/footprint-loading.gif'), 
-                image: imageProvider
-              ),
-            ),
-          );
+//           // si no es edición
+//           // if (imagePath == 'assets/no-photo.png') 
+//           return Padding(
+//             padding: const EdgeInsets.symmetric( horizontal: 10 ),
+//             child: ClipRRect(
+//               borderRadius: const BorderRadius.all(Radius.circular(10)),
+//               child: FadeInImage(
+//                 fit: BoxFit.cover,
+//                 placeholder: const AssetImage('assets/footprint-loading.gif'), 
+//                 image: imageProvider
+//               ),
+//             ),
+//           );
 
     
-        }).toList(),
-      ),
-    );
+//         }).toList(),
+//       ),
+//     );
 
-  }
-}
+//   }
+// }

@@ -12,17 +12,10 @@ class RegisterCubit extends Cubit<RegisterFormState> {
   
   RegisterCubit() : super( const RegisterFormState() );
 
-  PageController _pageController = PageController( keepPage: false );
+  final PageController _pageController = PageController( keepPage: false );
 
-
-  // void _pageControllerStream() {
-
-  //   _pageController.addListener(() {
-
-  //     changeCurrentPage( _pageController.page! );
-
-  //   });
-
+  // void _disposePageController() {
+  //   _pageController.dispose();
   // }
 
   PageController get pageContoller => _pageController;
@@ -108,11 +101,6 @@ class RegisterCubit extends Cubit<RegisterFormState> {
   }
 
   void imagesChanged( List<String> newImages ) {
-
-    // if ( state.initialPage > 0 ){
-    //   _pageController.jumpToPage( state.initialPage );
-    // }
-
     
     if ( state.images.isNotEmpty ){
       _pageController.jumpToPage( state.images.length );
@@ -153,10 +141,6 @@ class RegisterCubit extends Cubit<RegisterFormState> {
       _pageController.jumpToPage( 0 );
 
     }
-
-
-
-
 
   }
 
@@ -213,7 +197,6 @@ class RegisterCubit extends Cubit<RegisterFormState> {
 
     if ( state.vaccines == null ) vaccinesChanged( false );
     
-
     
     emit(
       state.copyWith(
@@ -246,6 +229,8 @@ class RegisterCubit extends Cubit<RegisterFormState> {
         formStatus: FormzSubmissionStatus.posting
       )
     );
+
+    // _pageController.dispose();
 
     return Pet(
       id: pet?.id,

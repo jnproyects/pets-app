@@ -8,11 +8,12 @@ import 'package:pets_app/presentation/cubits/cubits.dart';
 class ImageGallery extends StatelessWidget {
 
   final List<String> images;
-  
+  final bool isEdit;
 
   const ImageGallery({
     super.key, 
-    required this.images,
+    required this.images, 
+    this.isEdit = false,
   });
 
   @override
@@ -31,7 +32,7 @@ class ImageGallery extends StatelessWidget {
       );
     }
 
-    return _Slides( images: images );
+    return _Slides( images: images, isEdit: isEdit, );
 
   }
 }
@@ -39,10 +40,12 @@ class ImageGallery extends StatelessWidget {
 class _Slides extends StatelessWidget {
 
   final List<String> images;
-
+  final bool isEdit;
+  
   const _Slides({
     super.key,
     required this.images, 
+    required this.isEdit, 
   });
 
   @override
@@ -71,11 +74,70 @@ class _Slides extends StatelessWidget {
         } else {
           imageProvider = AssetImage( imagePath );
         }
+
+        // si es registro o edición
+        if ( isEdit ) {
     
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+      
+              Padding(
+                padding: const EdgeInsets.symmetric( horizontal: 10 ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  child: FadeInImage(
+                    fit: BoxFit.cover,
+                    placeholder: const AssetImage('assets/footprint-loading.gif'), 
+                    image: imageProvider
+                  ),
+                ),
+              ),
+      
+              // gradient y sombra sólo si existen fotos
+              if ( imagePath != 'assets/no-photo.png' )
+      
+                const CustomImageGradient(
+                  colors: [
+                    Colors.transparent,
+                    Colors.black26
+                  ],
+                  stops:  [
+                    0.8, 
+                    1.0
+                  ],
+                  begin: Alignment.bottomLeft,
+                  end: Alignment.topRight
+                ),
+      
+                Positioned(
+                  top: 5,
+                  // left: 15,
+                  right: 10,
+                  // bottom: 10,
+                  child: IconButton(
+                    color: Colors.white,
+                    // iconSize: 30,
+                    icon: const Icon(
+                      Icons.delete,
+                      size: 35,
+                    ),
+                    onPressed: (){
+                      context.read<RegisterCubit>().deletePetImage( images: images, imagePath: imagePath );
+                    }
+                    
+                  )
+                ),
+      
+            ],
+          );
+
+        }
+
+        // si pasa aca quiere decir que es el screen de detalle
         return Stack(
           fit: StackFit.expand,
           children: [
-    
             Padding(
               padding: const EdgeInsets.symmetric( horizontal: 10 ),
               child: ClipRRect(
@@ -87,58 +149,75 @@ class _Slides extends StatelessWidget {
                 ),
               ),
             ),
-    
-            // gradient y sombra sólo si existen fotos
-            if ( imagePath != 'assets/no-photo.png' )
-    
-              const Positioned.fill(
-                child: Padding(
-                  padding: EdgeInsets.symmetric( horizontal: 10 ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.transparent,
-                            Colors.black26
-                          ],
-                          stops: [
-                            0.8, 
-                            1.0
-                          ],
-                          begin: Alignment.bottomLeft,
-                          end: Alignment.topRight
-                        )
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-    
-              Positioned(
-                top: 5,
-                // left: 15,
-                right: 10,
-                // bottom: 10,
-                child: IconButton(
-                  color: Colors.white,
-                  // iconSize: 30,
-                  icon: const Icon(
-                    Icons.delete,
-                    size: 35,
-                  ),
-                  onPressed: (){
-                    context.read<RegisterCubit>().deletePetImage( images: images, imagePath: imagePath );
-                  }
-                  
+        
+            const CustomImageGradient(
+              colors: [
+                Colors.transparent,
+                Colors.black26
+              ],
+              stops:  [
+                0.8, 
+                1.0
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight
+            ),
+        
+            Positioned(
+              bottom: 5,
+              right: 10,
+              child: IconButton(
+                splashColor: Colors.transparent,
+                onPressed: (){},
+                icon: const Icon(
+                  Icons.zoom_in,
+                  color: Colors.white70, 
+                  size: 35
                 )
               ),
-    
+            )
           ],
         );
     
       }).toList(),
+    );
+  }
+}
+
+class CustomImageGradient extends StatelessWidget {
+
+  final List<Color> colors;
+  final List<double>? stops;
+  final AlignmentGeometry begin;
+  final AlignmentGeometry end;
+
+  const CustomImageGradient({
+    super.key, 
+    required this.colors, 
+    this.stops,
+    this.begin = Alignment.centerLeft,
+    this.end = Alignment.centerRight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: Padding(
+        padding: const EdgeInsets.symmetric( horizontal: 10 ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: colors,
+                stops: stops,
+                begin: begin,
+                end: end
+              )
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

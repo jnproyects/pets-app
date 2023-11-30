@@ -94,8 +94,8 @@ class _AddPetForm extends StatelessWidget {
               // height: 175,
               // width: 300,
               child: ImageGallery(
-                images: petImages
-                // images: ( petImages.isEmpty ) ? [ ...pet.images ] : [ ...petImages ],
+                images: petImages,
+                isEdit: true,
               ),
             ),
 
