@@ -16,6 +16,9 @@ class RegisterFormState extends Equatable {
   final bool? vaccines;
   final List<String> images;
 
+  final double currentPage;
+  final int initialPage;
+
   const RegisterFormState({
     this.formStatus = FormzSubmissionStatus.initial, 
     this.isValid = false,
@@ -27,6 +30,8 @@ class RegisterFormState extends Equatable {
     this.size = const Size.pure(),
     this.vaccines,
     this.images = const[],
+    this.currentPage = 0,
+    this.initialPage = 0,
   });
 
   RegisterFormState copyWith({
@@ -40,6 +45,8 @@ class RegisterFormState extends Equatable {
     Size? size,
     bool? vaccines,
     List<String>? images,
+    double? currentPage,
+    int? initialPage,
   }) {
     return RegisterFormState(
       formStatus: formStatus ?? this.formStatus,
@@ -52,10 +59,12 @@ class RegisterFormState extends Equatable {
       size: size ?? this.size,
       vaccines: vaccines ?? this.vaccines,
       images: images ?? this.images,
+      currentPage: currentPage ?? this.currentPage,
+      initialPage: initialPage ?? this.initialPage
     );
   }
 
   @override
-  List<Object?> get props => [ formStatus, isValid, name, race, age, sex, specie, size, vaccines, images ];
+  List<Object?> get props => [ formStatus, isValid, name, race, age, sex, specie, size, vaccines, images, currentPage, initialPage ];
 }
 

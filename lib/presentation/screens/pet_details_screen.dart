@@ -157,12 +157,20 @@ class _PetDetails extends StatelessWidget {
           ),
 
           
-    
-          // PetImagesSlideShow(
-          //   petImages: ( pet.images.isEmpty ) ? ['assets/no-image.png'] : pet.images
-          // ),
-          // _ImageGallery(images: ( pet.images.isEmpty ) ? ['assets/no-image.png'] : pet.images ),
-          _ImageGallery(images: pet.images ),
+  
+          // _ImageGallery(images: pet.images ),
+  
+          SizedBox(
+            height: 350,
+            width: 600,
+            child: ImageGallery(images: pet.images )
+          ),
+
+          Dots(
+            cantImages: pet.images.length,
+            bulletPrimario: 10,
+            bulletSecundario: 8,
+          ),
     
           const SizedBox(
             height: 15,
@@ -332,20 +340,20 @@ class _EditPetForm extends StatelessWidget {
               onPressed: () async {
                 
                 // el usuario puede seleccionar múltiples fotos a la vez
-                List<String>? photosPath = await CameraGalleryServiceImpl().selectMultiplePhotos();
-                if ( photosPath == null ) return;
-
-                ( petImages.isEmpty )
-                  ? registerCubit.imagesChanged( [ ...pet.images, ...photosPath ] )
-                  : registerCubit.imagesChanged( [ ...photosPath ] );
-
-                // el usuario puede seleccionar 1 foto a la vez
-                // final String? photoPath = await CameraGalleryServiceImpl().selectPhoto();
-                // if ( photoPath == null ) return;
+                // List<String>? photosPath = await CameraGalleryServiceImpl().selectMultiplePhotos();
+                // if ( photosPath == null ) return;
 
                 // ( petImages.isEmpty )
-                //   ? registerCubit.imagesChanged( [ ...pet.images, photoPath ] )
-                //   : registerCubit.imagesChanged( [ photoPath ] );
+                //   ? registerCubit.imagesChanged( [ ...pet.images, ...photosPath ] )
+                //   : registerCubit.imagesChanged( [ ...photosPath ] );
+
+                // el usuario puede seleccionar 1 foto a la vez
+                final String? photoPath = await CameraGalleryServiceImpl().selectPhoto();
+                if ( photoPath == null ) return;
+
+                ( petImages.isEmpty )
+                  ? registerCubit.imagesChanged( [ ...pet.images, photoPath ] )
+                  : registerCubit.imagesChanged( [ photoPath ] );
         
               }, 
               icon: const Icon( Icons.photo_library_outlined ),
@@ -650,18 +658,13 @@ class _ImageGallery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // if ( isEdit && !images.contains('assets/no-image.png')) {
-    //   images.insert(0,'assets/no-image.png');
-    // }
-
-
     if ( images.isEmpty ) {
       return Padding(
         padding: const EdgeInsets.symmetric( horizontal: 16 ),
         child: ClipRRect(
           borderRadius: const BorderRadius.all( Radius.circular(20) ),
           child: Image.asset(
-            'assets/no-image.png', 
+            'assets/no-photo.png', 
             fit: BoxFit.cover
           )
         ),
@@ -708,7 +711,7 @@ class _ImageGallery extends StatelessWidget {
                   ),
                 ),
 
-                if ( imagePath != 'assets/no-image.png' )
+                if ( imagePath != 'assets/no-photo.png' )
 
                   Positioned(
                     top: 5,
@@ -737,7 +740,7 @@ class _ImageGallery extends StatelessWidget {
 
 
           // si no es edición
-          // if (imagePath == 'assets/no-image.png') 
+          // if (imagePath == 'assets/no-photo.png') 
           return Padding(
             padding: const EdgeInsets.symmetric( horizontal: 10 ),
             child: ClipRRect(

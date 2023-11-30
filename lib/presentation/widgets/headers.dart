@@ -8,8 +8,8 @@ class HeaderCuadrado extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
-      color: const Color(0xFF615AAB),
+      height: 350,
+      color: AppTheme.primary
     );
   }
 
@@ -279,9 +279,24 @@ class _HeaderWavePainter extends CustomPainter {
     path.quadraticBezierTo( size.width * 0.25, size.height * 0.30, size.width * 0.50, size.height * 0.25 );
     path.quadraticBezierTo( size.width * 0.75, size.height * 0.20, size.width, size.height * 0.25 );
     path.lineTo( size.width, 0 );
- 
-
     canvas.drawPath(path, lapiz);
+
+    final lapiz2 = Paint();
+
+    lapiz2.color = Color(0x8D086474);
+    lapiz2.style = PaintingStyle.fill;
+    lapiz2.strokeWidth = 20;
+
+    final path2 = Path();
+
+    // Dibujar con el path y el lapiz
+    path2.lineTo( 0, size.height * 0.25 );
+    path2.quadraticBezierTo( size.width * 0.30, size.height * 0.35, size.width * 0.50, size.height * 0.30 );
+    path2.quadraticBezierTo( size.width * 0.70, size.height * 0.25, size.width, size.height * 0.25 );
+    path2.lineTo( size.width, 0 );
+    canvas.drawPath(path2, lapiz2);
+
+
 
   }
 
@@ -335,9 +350,9 @@ class _HeaderWaveBottomPainter extends CustomPainter {
 
     // Dibujar con el path y el lapiz
     path.moveTo( 0, size.height );
-    path.lineTo( 0, size.height * 0.75);
-    path.quadraticBezierTo( size.width * 0.25, size.height * 0.70, size.width * 0.50, size.height * 0.75 );
-    path.quadraticBezierTo( size.width * 0.75, size.height * 0.80, size.width, size.height * 0.75 );
+    path.lineTo( 0, size.height * 0.40 );
+    path.quadraticBezierTo( size.width * 0.25, size.height * 0.50, size.width * 0.50, size.height * 0.40 );
+    path.quadraticBezierTo( size.width * 0.75, size.height * 0.30, size.width, size.height * 0.40 );
     path.lineTo( size.width, size.height );
  
 

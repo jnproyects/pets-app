@@ -20,7 +20,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  bool isLoading = false;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -40,6 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     final pets = context.watch<PetsCubit>().state.pets;
+
+    // puede ser otra forma de realizar la validación
+    // Visibility(child: child)
 
     if ( isLoading ) {
       return const Scaffold(
@@ -202,7 +205,7 @@ class _MainPetsList extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CustomCard(
-                    imageUrl: ( pet.images.isNotEmpty ) ? pet.images.first : 'assets/no-image.png',
+                    imageUrl: ( pet.images.isNotEmpty ) ? pet.images.first : 'assets/no-photo.png',
                     name: pet.name,
                   ),
                 ),

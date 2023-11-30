@@ -19,7 +19,7 @@ class Age extends FormzInput<String, AgeError> {
   String? get errorMessage {
     
     if ( isValid || isPure ) return null;
-    if ( displayError == AgeError.empty ) return 'El campo es requerido';
+    if ( displayError == AgeError.empty ) return 'Required';
 
     return null;
   }

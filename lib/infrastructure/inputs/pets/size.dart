@@ -16,7 +16,7 @@ class Size extends FormzInput<String, SizeError> {
   String? get errorMessage {
     
     if ( isValid || isPure ) return null;
-    if ( displayError == SizeError.empty ) return 'El campo es requerido';
+    if ( displayError == SizeError.empty ) return 'Required';
 
     return null;
   }

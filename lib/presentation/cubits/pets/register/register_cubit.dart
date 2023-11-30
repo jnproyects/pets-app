@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 
 import 'package:pets_app/domain/domain.dart';
@@ -11,6 +12,20 @@ class RegisterCubit extends Cubit<RegisterFormState> {
   
   RegisterCubit() : super( const RegisterFormState() );
 
+  PageController _pageController = PageController( keepPage: false );
+
+
+  // void _pageControllerStream() {
+
+  //   _pageController.addListener(() {
+
+  //     changeCurrentPage( _pageController.page! );
+
+  //   });
+
+  // }
+
+  PageController get pageContoller => _pageController;
 
   void nameChanged( String value ) {
     
@@ -93,25 +108,66 @@ class RegisterCubit extends Cubit<RegisterFormState> {
   }
 
   void imagesChanged( List<String> newImages ) {
-    emit(
-      state.copyWith(
-        images: [ ...state.images, ...newImages ]
-      )
-    );
-  }
 
-  void deletePetImage( { required List<String> images, required String imagePath } ) {
+    // if ( state.initialPage > 0 ){
+    //   _pageController.jumpToPage( state.initialPage );
+    // }
 
-    if ( images.length == 1 ) {
-      images[0] = 'assets/no-image.png';
+    
+    if ( state.images.isNotEmpty ){
+      _pageController.jumpToPage( state.images.length );
     }
 
     emit(
       state.copyWith(
-        images: images.where( ( image ) => ( image != imagePath ) ).toList()
+        images: [ ...state.images.where( ( image ) => ( image != 'assets/no-photo.png' ) ).toList(), ...newImages ],
+        currentPage: state.images.length.toDouble(),
+        // initialPage: state.images.length + 1
       )
     );
 
+  }
+
+  void deletePetImage( { required List<String> images, required String imagePath } ) {
+
+    String noPhoto = 'assets/no-photo.png';
+
+    if ( images.length == 1 ) {
+      images.add(noPhoto);
+    }
+
+    emit(
+      state.copyWith(
+        images: images.where( ( image ) => ( image != imagePath ) ).toList(),
+        currentPage: !images.contains(noPhoto) && images.indexOf(imagePath) > 0
+          ? images.length - 2
+          : 0
+      )
+    );
+
+    // se esta borrando desde el último elemento
+    if ( images.indexOf(imagePath) == images.length - 1 ){
+      _pageController.jumpToPage( state.images.length );
+    } else if ( images.indexOf(imagePath) > 0 && images.indexOf(imagePath) != images.length - 1 ) {
+      
+      _pageController.jumpToPage( 0 );
+
+    }
+
+
+
+
+
+  }
+
+  void changeCurrentPage( double newCurrentPage ) {
+
+    emit(
+      state.copyWith(
+        currentPage: newCurrentPage,
+        // initialPage: newCurrentPage.round()
+      )
+    );
   }
 
 
@@ -149,7 +205,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
         vaccinesChanged( pet!.vaccines );
       }
       
-      //  state.images.where((image) => image != 'assets/no-image.png' ).toList();
+      //  state.images.where((image) => image != 'assets/no-photo.png' ).toList();
       
       if ( state.images.isEmpty ) imagesChanged( pet!.images );
 
@@ -201,7 +257,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
       size: state.size.value,
       vaccines: state.vaccines,
       // images: state.images,
-      images: state.images.where((image) => image != 'assets/no-image.png' ).toList()
+      images: state.images.where((image) => image != 'assets/no-photo.png' ).toList()
     );
 
   }
