@@ -20,31 +20,30 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/add-pet',
       name: AddPetScreen.routeName,
-      builder: (context, state) => AddPetScreen(),
+      builder: (context, state) => const AddPetScreen(),
       // pageBuilder: (context, state) => customTransitionPage( state, const AddPetScreen() ),
     ),
 
     GoRoute(
       path: '/pet-details/:id',
-      name: PetDetailsScreen.routeName,
+      name: PetDetailsEditScreen.routeName,
       // builder: (context, state) {
         
         // no usar en este caso
         // final Pet pet = state.extra as Pet;
-        // return PetDetailsScreen( pet: pet );
+        // return PetDetailsEditScreen( pet: pet );
 
         // usar
         // final petId = state.pathParameters['id'] ?? 'no-id';
-        // return PetDetailsScreen( petId: int.parse(petId) );
+        // return PetDetailsEditScreen( petId: int.parse(petId) );
 
       // },
       pageBuilder: (context, state) => customTransitionPage(
         state,
-        PetDetailsScreen( petId: int.parse( state.pathParameters['id'] ?? 'no-id' ) )
+        PetDetailsEditScreen( petId: int.parse( state.pathParameters['id'] ?? 'no-id' ) )
       ),
 
     ),
-    
 
   ],
 

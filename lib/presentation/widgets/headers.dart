@@ -14,8 +14,9 @@ class HeaderCuadrado extends StatelessWidget {
       height: size.height * 0.7,
       // height: 600,
       width: 600,
-      color: AppTheme.primary
+      color: AppTheme.primary,
     );
+
   }
 
 }
@@ -290,7 +291,7 @@ class _HeaderWavePainter extends CustomPainter {
 
     final lapiz2 = Paint();
 
-    lapiz2.color = Color(0x8D086474);
+    lapiz2.color = const Color(0x8D086474);
     lapiz2.style = PaintingStyle.fill;
     lapiz2.strokeWidth = 20;
 
@@ -326,10 +327,8 @@ class HeaderWaveBottom extends StatelessWidget {
     return SizedBox(
       height: double.infinity,
       width: double.infinity,
-      // color: const Color(0xFF615AAB),
       child: CustomPaint(
         painter: _HeaderWaveBottomPainter( color ),
-    
       ),
     );
   }
@@ -347,23 +346,34 @@ class _HeaderWaveBottomPainter extends CustomPainter {
 
     final lapiz = Paint();
 
-    // Propiedades
-    // lapiz.color = const Color(0xFF615AAB);
     lapiz.color = color;
     lapiz.style = PaintingStyle.fill;
     lapiz.strokeWidth = 20;
 
     final path = Path();
-
-    // Dibujar con el path y el lapiz
-    path.moveTo( 0, size.height );
-    path.lineTo( 0, size.height * 0.20 );
-    path.quadraticBezierTo( size.width * 0.25, size.height * 0.50, size.width * 0.50, size.height * 0.20 );
-    path.quadraticBezierTo( size.width * 0.75, size.height * 0.30, size.width, size.height * 0.20 );
+    
+    path.moveTo(0, size.height * 0.25);
+    path.quadraticBezierTo( size.width * 0.50, size.height * 0.50, size.width, size.height * 0.1 );
     path.lineTo( size.width, size.height );
- 
+    path.lineTo( 0, size.height );
 
     canvas.drawPath(path, lapiz);
+
+
+    final lapiz2 = Paint();
+
+    lapiz2.color = const Color(0x8D086474);
+    lapiz2.style = PaintingStyle.fill;
+    lapiz2.strokeWidth = 20;
+
+    final path2 = Path();
+
+    path2.moveTo(0, size.height * 0.25);
+    path2.quadraticBezierTo( size.width * 0.50, size.height * 0.40, size.width, size.height * 0.05 );
+    path2.lineTo( size.width, size.height );
+    path2.lineTo( 0, size.height );
+    
+    canvas.drawPath(path2, lapiz2);
 
   }
 
@@ -534,6 +544,66 @@ class _BackgroundWavesPainter extends CustomPainter {
 
 }
 
-/// Para dibujar lineas curvas usamos path.quadraticBezierTo
-/// los dos primeros parametros representan el punto por donde va a pasar la curvatura, eje de la curva
-/// los dos ultimos parametros representa el punto donde termina la linea
+
+
+class BackgroundWavesLeft extends StatelessWidget {
+  
+  const BackgroundWavesLeft({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: double.infinity,
+      width: double.infinity,
+      child: CustomPaint(
+        painter: _BackgroundWavesLeftPainter(),
+      ),
+    );
+  }
+
+}
+
+class _BackgroundWavesLeftPainter extends CustomPainter {
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    
+    final lapiz = Paint();
+    final lapiz2 = Paint();
+
+    lapiz.color = AppTheme.primary;
+    lapiz.style = PaintingStyle.fill;
+    lapiz.strokeWidth = 20;
+
+    lapiz2.color = const Color(0x8D086474);
+    lapiz2.style = PaintingStyle.fill;
+    lapiz2.strokeWidth = 20;
+
+    final path = Path();
+    final path2 = Path();
+
+
+    path.moveTo( 0, size.height * 0.4 );
+    path.quadraticBezierTo( size.width * 0.30, size.height * 0.85, 0, size.height );
+    path.lineTo( 0, size.height);
+
+    path2.moveTo( 0, size.height * 0.4 );
+    path2.quadraticBezierTo( size.width * 0.40, size.height * 0.8, 0, size.height );
+    path2.lineTo( 0, size.height);
+
+
+    // esquina superior derecha
+    path.moveTo( size.width * 0.80, 0 );
+    path.quadraticBezierTo( size.width * 0.75, size.height * 0.15, size.width, size.height * 0.13 );
+    path.lineTo( size.width, 0 );
+
+    canvas.drawPath(path, lapiz);
+    canvas.drawPath(path2, lapiz2);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+
+}

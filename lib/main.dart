@@ -13,6 +13,9 @@ void main() async {
         BlocProvider(
           create: ( _ ) => PetsCubit(),
         ),
+        // BlocProvider(
+        //   create: ( _ ) => RegisterCubit()
+        // )
       ],
       child: const MyApp()
     )

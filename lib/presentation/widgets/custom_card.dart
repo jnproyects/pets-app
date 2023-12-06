@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pets_app/config/theme/app_theme.dart';
+import 'package:pets_app/presentation/widgets/image_gallery.dart';
 
 
 class CustomCard extends StatelessWidget {
@@ -52,25 +53,19 @@ class CustomCard extends StatelessWidget {
               fadeInDuration: const Duration(milliseconds: 300),
             ),
         
-            const Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.transparent,
-                      Colors.black87
-                    ],
-                    stops: [
-                      0.8, 
-                      1.0
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter
-                  )
-                ),
-              ),
+            const CustomGradient(
+              colors: [
+                Colors.transparent,
+                Colors.black54
+              ],
+              stops: [
+                0.8, 
+                1.0
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter
             ),
-        
+
             if( name != null )
               Positioned(
                 width: size.width * 0.90,

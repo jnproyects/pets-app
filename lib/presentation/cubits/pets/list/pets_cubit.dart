@@ -72,6 +72,7 @@ class PetsCubit extends Cubit<PetsState> {
   }
 
   void isEditingToggle() {
+    
     emit(
       state.copyWith(
         isEdit: !state.isEdit

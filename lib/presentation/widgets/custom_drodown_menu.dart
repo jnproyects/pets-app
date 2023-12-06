@@ -10,12 +10,15 @@ class CustomDropdownMenu extends StatelessWidget {
   final String? errorText;
   final Widget? label;
 
+  final String? initialSelection;
+
   const CustomDropdownMenu({
     super.key, this.width, 
     required this.dropdownMenuEntries, 
     this.onSelected, 
     this.errorText,
-    this.label
+    this.label, 
+    this.initialSelection
   });
 
   @override
@@ -59,6 +62,7 @@ class CustomDropdownMenu extends StatelessWidget {
           )
         ), 
         child: DropdownMenu(
+          initialSelection: initialSelection,
           width: width,
           label: label,
           dropdownMenuEntries: dropdownMenuEntries,

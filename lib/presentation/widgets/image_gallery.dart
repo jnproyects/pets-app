@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,8 +12,8 @@ class ImageGallery extends StatelessWidget {
   final bool isEdit;
 
   const ImageGallery({
-    super.key, 
-    required this.images, 
+    super.key,
+    required this.images,
     this.isEdit = false,
   });
 
@@ -32,26 +33,43 @@ class ImageGallery extends StatelessWidget {
       );
     }
 
-    return _Slides( images: images, isEdit: isEdit, );
+    return _Slides( 
+      images: images, 
+      isEdit: isEdit, 
+    );
 
   }
 }
 
-class _Slides extends StatelessWidget {
+class _Slides extends StatefulWidget {
 
   final List<String> images;
   final bool isEdit;
-  
+
   const _Slides({
     super.key,
     required this.images, 
-    required this.isEdit, 
+    required this.isEdit,
   });
 
   @override
-  Widget build(BuildContext context) {
+  State<_Slides> createState() => _SlidesState();
+}
 
-    final pageController = context.read<RegisterCubit>().pageContoller; 
+
+
+class _SlidesState extends State<_Slides> {
+
+  late PageController pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = context.read<RegisterCubit>().createInstancePageController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     pageController.addListener(() {
 
@@ -63,7 +81,7 @@ class _Slides extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       controller: pageController,
       
-      children: images.map((imagePath) {
+      children: widget.images.map((imagePath) {
         
         late ImageProvider imageProvider;
     
@@ -76,7 +94,7 @@ class _Slides extends StatelessWidget {
         }
 
         // si es registro o edición
-        if ( isEdit ) {
+        if ( widget.isEdit ) {
     
           return Stack(
             fit: StackFit.expand,
@@ -97,7 +115,7 @@ class _Slides extends StatelessWidget {
               // gradient y sombra sólo si existen fotos
               if ( imagePath != 'assets/no-photo.png' )
       
-                const CustomImageGradient(
+                const CustomGradient(
                   colors: [
                     Colors.transparent,
                     Colors.black26
@@ -107,23 +125,21 @@ class _Slides extends StatelessWidget {
                     1.0
                   ],
                   begin: Alignment.bottomLeft,
-                  end: Alignment.topRight
+                  end: Alignment.topRight,
+                  paddingHorizontal: 10.0,
                 ),
       
                 Positioned(
                   top: 5,
-                  // left: 15,
                   right: 10,
-                  // bottom: 10,
                   child: IconButton(
                     color: Colors.white,
-                    // iconSize: 30,
                     icon: const Icon(
                       Icons.delete,
                       size: 35,
                     ),
                     onPressed: (){
-                      context.read<RegisterCubit>().deletePetImage( images: images, imagePath: imagePath );
+                      context.read<RegisterCubit>().deletePetImage( images: widget.images, imagePath: imagePath );
                     }
                     
                   )
@@ -138,19 +154,23 @@ class _Slides extends StatelessWidget {
         return Stack(
           fit: StackFit.expand,
           children: [
+            
             Padding(
               padding: const EdgeInsets.symmetric( horizontal: 10 ),
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(10)),
-                child: FadeInImage(
-                  fit: BoxFit.cover,
-                  placeholder: const AssetImage('assets/footprint-loading.gif'), 
-                  image: imageProvider
+                child: Hero(
+                  tag: 'pet_image_hero_tag',
+                  child: FadeInImage(
+                    fit: BoxFit.cover,
+                    placeholder: const AssetImage('assets/footprint-loading.gif'), 
+                    image: imageProvider
+                  ),
                 ),
               ),
             ),
         
-            const CustomImageGradient(
+            const CustomGradient(
               colors: [
                 Colors.transparent,
                 Colors.black26
@@ -160,50 +180,80 @@ class _Slides extends StatelessWidget {
                 1.0
               ],
               begin: Alignment.topLeft,
-              end: Alignment.bottomRight
+              end: Alignment.bottomRight,
+              paddingHorizontal: 10.0,
             ),
-        
+
+            // hacer zoom a imagen
             Positioned(
               bottom: 5,
               right: 10,
               child: IconButton(
                 splashColor: Colors.transparent,
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: ( _ ) {
+                        return FadeInDown(
+                          duration: const Duration( milliseconds: 500 ),
+                          child: _FullScreenPetImage(
+                            imageUrl: imageProvider,
+                            // imageUrl: imagePath,
+                            tag: 'pet_image_hero_tag',
+                          ),
+                        );
+                      }
+                    )
+                  );
+                },
                 icon: const Icon(
                   Icons.zoom_in,
                   color: Colors.white70, 
                   size: 35
                 )
               ),
-            )
+            ),
+
           ],
         );
     
       }).toList(),
     );
+
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 }
 
-class CustomImageGradient extends StatelessWidget {
+
+
+class CustomGradient extends StatelessWidget {
 
   final List<Color> colors;
   final List<double>? stops;
   final AlignmentGeometry begin;
   final AlignmentGeometry end;
+  final double? paddingHorizontal;
 
-  const CustomImageGradient({
+  const CustomGradient({
     super.key, 
     required this.colors, 
     this.stops,
     this.begin = Alignment.centerLeft,
     this.end = Alignment.centerRight,
+    this.paddingHorizontal = 0.0,
   });
 
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
       child: Padding(
-        padding: const EdgeInsets.symmetric( horizontal: 10 ),
+        padding: EdgeInsets.symmetric( horizontal: paddingHorizontal! ),
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
           child: DecoratedBox(
@@ -310,6 +360,51 @@ class _Dot extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle
+      ),
+    );
+  }
+}
+
+
+class _FullScreenPetImage extends StatelessWidget {
+
+  // final String imageUrl;
+  final ImageProvider imageUrl;
+  final String tag;
+
+
+  const _FullScreenPetImage({
+    super.key, 
+    required this.imageUrl, 
+    required this.tag,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black87,
+      body: GestureDetector(
+        child: Center(
+          child: Hero(
+            tag: tag,
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(20.0), // Margin around the content
+              minScale: 0.5, // Minimum scale (zoom out)
+              maxScale: 2.8, // Maximum scale (zoom in)
+              child: FadeInImage(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                fit: BoxFit.contain,
+                placeholder: const AssetImage('assets/footprint-loading.gif'),
+                image: imageUrl
+              ),
+            ),
+
+          ),
+        ),
+        onTap: () {
+          Navigator.pop(context);
+        },
       ),
     );
   }

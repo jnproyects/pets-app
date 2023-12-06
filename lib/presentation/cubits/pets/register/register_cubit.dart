@@ -12,13 +12,25 @@ class RegisterCubit extends Cubit<RegisterFormState> {
   
   RegisterCubit() : super( const RegisterFormState() );
 
-  final PageController _pageController = PageController( keepPage: false );
+  late PageController _pageController;
+  
+  PageController get pageContoller => _pageController;
 
-  // void _disposePageController() {
+  PageController createInstancePageController() {
+
+    emit(
+      state.copyWith(
+        currentPage: 0
+      )
+    );
+
+    _pageController = PageController( keepPage: false );
+    return _pageController;
+  }
+
+  // disposePageController() {
   //   _pageController.dispose();
   // }
-
-  PageController get pageContoller => _pageController;
 
   void nameChanged( String value ) {
     
@@ -229,8 +241,6 @@ class RegisterCubit extends Cubit<RegisterFormState> {
         formStatus: FormzSubmissionStatus.posting
       )
     );
-
-    // _pageController.dispose();
 
     return Pet(
       id: pet?.id,

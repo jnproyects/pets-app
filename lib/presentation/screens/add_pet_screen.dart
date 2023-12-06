@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:pets_app/presentation/cubits/cubits.dart';
-import 'package:pets_app/presentation/widgets/custom_drodown_menu.dart';
 import 'package:pets_app/presentation/widgets/widgets.dart';
 import 'package:pets_app/shared/services/services.dart';
 
@@ -17,13 +16,19 @@ class AddPetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: BlocProvider(
         create: (context) => RegisterCubit(),
-        child: const Stack(
+        child: Stack(
           children: [
 
-            HeaderWave(),
+            SizedBox(
+              height: size.height * 0.9,
+              child: HeaderWave()
+            ),
             // HeaderWaveBottom(color: AppTheme.primary),
 
             _AddPetForm(),
@@ -86,13 +91,11 @@ class _AddPetForm extends StatelessWidget {
               ),
             ),
 
-            const SizedBox( height: 30 ),
+            const SizedBox( height: 75 ),
 
             SizedBox(
-              height: 350,
-              width: 600,
-              // height: 175,
-              // width: 300,
+              height: 300,
+              width: 550,
               child: ImageGallery(
                 images: petImages,
                 isEdit: true,
@@ -171,15 +174,15 @@ class _AddPetForm extends StatelessWidget {
                       width: size.width * 0.9,
                       label: const Text('Specie'),
                       dropdownMenuEntries: const [
-                          DropdownMenuEntry(
-                            value: 'Dog', 
-                            label: 'Dog'
-                          ),
-                          DropdownMenuEntry(
-                            value: 'Cat', 
-                            label: 'Cat'
-                          )
-                        ],
+                        DropdownMenuEntry(
+                          value: 'Dog', 
+                          label: 'Dog'
+                        ),
+                        DropdownMenuEntry(
+                          value: 'Cat', 
+                          label: 'Cat'
+                        )
+                      ],
                       onSelected: ( value ) => registerCubit.specieChanged( value! ),
                       errorText: specie.errorMessage,
                     ),
@@ -188,7 +191,7 @@ class _AddPetForm extends StatelessWidget {
             
                     CustomTextFormField(
                       label: 'Name',
-                      onChanged: ( value ) => registerCubit.nameChanged( value ),
+                      onChanged: ( value ) => registerCubit.nameChanged( value.trim() ),
                       errorMessage: name.errorMessage,
                     ),
             
@@ -343,7 +346,7 @@ class _ButtonsForm extends StatelessWidget {
     
                   NotificationsService.showCustomSnackbar(
                     context: context, 
-                    mensaje: 'Tu mascota fue registrada!'
+                    mensaje: '${ pet.name } successfully registered!'
                   );
                   
                   context.go('/');
@@ -351,7 +354,7 @@ class _ButtonsForm extends StatelessWidget {
                 else {
                   NotificationsService.showCustomSnackbar(
                     context: context, 
-                    mensaje: 'Error al registrar tu mascota',
+                    mensaje: 'Error registering your pet',
                     error: true
                   );
                 }
