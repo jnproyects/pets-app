@@ -1,15 +1,12 @@
 import 'package:isar/isar.dart';
-// import 'package:uuid/uuid.dart';
 
 part 'pet.g.dart';
 
 @collection
 class Pet {
 
-  // Id? id = int.parse( const Uuid().v4() );
   Id? id;
 
-  // final String petId = const Uuid().v4();
   final String name;
   final String race;
   final String age;

@@ -27,11 +27,11 @@ class AddPetScreen extends StatelessWidget {
 
             SizedBox(
               height: size.height * 0.9,
-              child: HeaderWave()
+              child: const HeaderWave()
             ),
             // HeaderWaveBottom(color: AppTheme.primary),
 
-            _AddPetForm(),
+            const _AddPetForm(),
           ],
         ),
       ),
@@ -53,11 +53,27 @@ class _AddPetForm extends StatelessWidget {
     final petSize = registerCubit.state.size;
     final vaccines = registerCubit.state.vaccines;
     final petImages = registerCubit.state.images;
+    final age = registerCubit.state.age;
 
     final size = MediaQuery.of(context).size;
 
-    // final firstDate = DateTime(DateTime.now().year - 120);
-    // final lastDate = DateTime.now();
+    // DateTime selectedDate = ( age == null ) ? DateTime.now().toLocal() : age.toLocal();
+    DateTime? selectedDate = age;
+
+    Future<void> selectDate(BuildContext context) async {
+
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime( 2010 ),
+        lastDate: DateTime.now().toLocal(),
+      );
+
+      if (picked != null && picked != selectedDate) {
+        registerCubit.ageChanged( picked.toLocal() );
+      }
+
+    }
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -202,34 +218,47 @@ class _AddPetForm extends StatelessWidget {
                       onChanged: ( value ) => registerCubit.raceChanged( value ),
                       errorMessage: race.errorMessage,
                     ),
+
+                    const SizedBox(height: 15),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.only( top: 20, bottom: 20, left: 10, right: 20 ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(15), bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15) ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.06),
+                                  blurRadius: 10,
+                                  offset: const Offset(0,5)
+                                )
+                              ]
+                            ),
+                            child: Text(
+                              ( selectedDate == null ) ? "yyyy/mm/dd" : "${ selectedDate.toLocal() }".split(' ')[0],
+                              style: const TextStyle( color: Colors.black26, fontSize: 16, fontWeight: FontWeight.bold ),
+                              
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox( width: 30 ),
+
+                        ElevatedButton(
+                          onPressed: () => selectDate(context),
+                          child: const Text('Select Birthdate'),
+                        ),
+
+                      ],
+                    ),
             
                     const SizedBox(height: 15),
-            
-                    // Container(
-                    //   decoration: const BoxDecoration(
-                    //     color: Colors.white,
-                    //     borderRadius: BorderRadius.only( topRight: Radius.circular(10), bottomLeft: Radius.circular(10), ),
-                        
-                    //   ),
-                    //   child: InputDatePickerFormField(
-                    //     // initialDate: DateTime.now(),
-                    //     firstDate: firstDate, 
-                    //     lastDate: lastDate,
-                    //     acceptEmptyDate: true,
-                    //     fieldLabelText: 'Birthdate',
-                    //     onDateSubmitted: ( date ) {
-                    //       print(date);
-                    //     },
-                    //     onDateSaved: ( date ) {
-                    //       print(date);
-                    //     },
-                        
-                        
-                    //   ),
-                    // ),
-            
-                    // const SizedBox(height: 15),
-            
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

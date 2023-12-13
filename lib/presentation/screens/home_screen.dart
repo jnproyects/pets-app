@@ -84,9 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               const Text(
-                'Aún no tienes mascotas agregadas!!',
+                'You do not have any pets added yet!!',
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: 19,
                   fontWeight: FontWeight.w300
                 ),
               ),
@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   onPressed: () => context.push('/add-pet'),
                   child: const Text(
-                    'Agregar',
+                    'Add Now',
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -156,7 +156,6 @@ class _MainPetsList extends StatelessWidget {
   final List<Pet> pets;
 
   const _MainPetsList({
-    super.key, 
     required this.pets
   });
 

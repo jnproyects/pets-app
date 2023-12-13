@@ -1,4 +1,6 @@
+import 'package:age_calculator/age_calculator.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dart_date/dart_date.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
@@ -32,6 +34,37 @@ class RegisterCubit extends Cubit<RegisterFormState> {
   //   _pageController.dispose();
   // }
 
+  String calculatePetAge( DateTime? ageValue ) {
+
+    final birthdatePet = ageValue;
+
+    String valor = "";
+
+    if ( birthdatePet != null ) {
+      
+      DateDuration duration = AgeCalculator.age(birthdatePet);
+      final List<String> formatedDuration = duration.toString().split(','); //[Years: 1,  Months: 1,  Days: 0]
+
+      final String years = ( formatedDuration[0].contains('0') )
+        ? ''
+        : "${formatedDuration[0].replaceFirst('Years: ', '')} year(s) ";
+      
+      final String months = ( formatedDuration[1].contains('0') ) 
+        ? '' 
+        : "${formatedDuration[1].replaceFirst('Months: ', '')} month(s)";
+
+      final String days = ( formatedDuration[2].contains('0') ) 
+        ? '' 
+        : "${formatedDuration[2].replaceFirst('Days: ', '')} day(s)";
+
+      
+      valor = "Age: $years $months  $days".replaceAll('  ', '');
+    
+    }
+
+    return valor;
+  }
+
   void nameChanged( String value ) {
     
     final name = Name.dirty( value );
@@ -39,7 +72,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
     emit(
       state.copyWith(
         name: name,
-        isValid: Formz.validate([ name, state.race, state.age, state.sex, state.specie, state.size ])
+        isValid: Formz.validate([ name, state.race, state.sex, state.specie, state.size ])
       )
     );
   }
@@ -51,21 +84,19 @@ class RegisterCubit extends Cubit<RegisterFormState> {
     emit(
       state.copyWith(
         race: race,
-        isValid: Formz.validate([ state.name, race, state.age, state.sex, state.specie, state.size ])
+        isValid: Formz.validate([ state.name, race, state.sex, state.specie, state.size ])
       )
     );
   }
 
-  void ageChanged( String value ) {
-
-    final age = Age.dirty( value );
+  void ageChanged( DateTime value ) {
 
     emit(
       state.copyWith(
-        age: age,
-        isValid: Formz.validate([ state.name, state.race, age, state.sex, state.specie, state.size ])
+        age: value
       ),
     );
+
   }
 
   void sexChanged( String value ) {
@@ -75,7 +106,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
     emit(
       state.copyWith(
         sex: sex,
-        isValid: Formz.validate([ state.name, state.race, state.age, sex, state.specie, state.size ])
+        isValid: Formz.validate([ state.name, state.race, sex, state.specie, state.size ])
       )
     );
   }
@@ -87,7 +118,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
     emit(
       state.copyWith(
         specie: specie,
-        isValid: Formz.validate([ state.name, state.race, state.age, state.sex, specie, state.size ])
+        isValid: Formz.validate([ state.name, state.race, state.sex, specie, state.size ])
       )
     );
   }
@@ -99,7 +130,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
     emit(
       state.copyWith(
         size: size,
-        isValid: Formz.validate([ state.name, state.race, state.age, state.sex, state.specie, size ])
+        isValid: Formz.validate([ state.name, state.race, state.sex, state.specie, size ])
       )
     );
   }
@@ -185,9 +216,9 @@ class RegisterCubit extends Cubit<RegisterFormState> {
         sexChanged( pet!.sex );
       }
 
-      // if ( state.age.value == '' && state.name.errorMessage == null ) {
-      //   ageChanged( pet!.age );
-      // }
+      if ( state.age == null ) {
+        ageChanged( DateTime.parse( pet!.age ));
+      }
 
       if ( state.specie.value == '' && state.specie.errorMessage == null ) {
         specieChanged( pet!.specie );
@@ -215,7 +246,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
         formStatus: FormzSubmissionStatus.validating,
         name: Name.dirty( state.name.value ),
         race: Race.dirty( state.race.value ),
-        // age: Age.dirty( state.age.value ),
+        // age: state.age,
         sex: Sex.dirty( state.sex.value ),
         specie: Specie.dirty( state.specie.value ),
         size: Size.dirty( state.size.value ),
@@ -246,13 +277,12 @@ class RegisterCubit extends Cubit<RegisterFormState> {
       id: pet?.id,
       name: state.name.value, 
       race: state.race.value,
-      age: state.age.value,
+      age: state.age.toString(),
       sex: state.sex.value,
       specie: state.specie.value,
       size: state.size.value,
       vaccines: state.vaccines,
-      // images: state.images,
-      images: state.images.where((image) => image != 'assets/no-photo.png' ).toList()
+      images: state.images.where( (image) => image != 'assets/no-photo.png' ).toList()
     );
 
   }

@@ -29,7 +29,7 @@ class DetailsPetView extends StatelessWidget {
   Widget build(BuildContext context) {
 
     context.watch<PetsCubit>();
-    context.watch<RegisterCubit>();
+    final registerCubit = context.watch<RegisterCubit>();
 
     return Padding(
       padding: const EdgeInsets.only( top: 50 ),
@@ -123,20 +123,19 @@ class DetailsPetView extends StatelessWidget {
               style: textStyle
             ),
       
-            // const SizedBox(
-            //   height: 10,
-            // ),
-      
-            // Text(
-              // 'Edad: ${ pet.age } meses', 
-            //   'Age:', 
-            //   style: textStyle
-            // ),
-      
             const SizedBox(
               height: 10,
             ),
-      
+
+            if ( pet.age != "null" )
+              Container(
+                margin: const EdgeInsets.only( bottom: 10 ),
+                child: Text(
+                  registerCubit.calculatePetAge( DateTime.parse( pet.age ) ),
+                  style: textStyle
+                ),
+              ),
+
             Text(
               'Vaccines: ${ ( pet.vaccines! ) ? 'Yes' : 'No' }', 
               style: textStyle

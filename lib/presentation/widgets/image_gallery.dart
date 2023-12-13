@@ -47,7 +47,6 @@ class _Slides extends StatefulWidget {
   final bool isEdit;
 
   const _Slides({
-    super.key,
     required this.images, 
     required this.isEdit,
   });
@@ -328,7 +327,6 @@ class _Dot extends StatelessWidget {
   final double bulletSecundario;
 
   const _Dot({
-    super.key, 
     required this.index, 
     required this.dotsUp, 
     required this.colorPrimario, 
@@ -374,7 +372,6 @@ class _FullScreenPetImage extends StatelessWidget {
 
 
   const _FullScreenPetImage({
-    super.key, 
     required this.imageUrl, 
     required this.tag,
   });

@@ -37,7 +37,7 @@ class NotificationsService {
               // onPressed: () => context.pop(), 
               // onPressed: (){},
               onPressed: () => Navigator.pop(context, 'ok'),
-              child: Text(okButtonText, style: TextStyle( color: Colors.red ))
+              child: Text(okButtonText, style: const TextStyle( color: Colors.red ))
             )
 
           ],

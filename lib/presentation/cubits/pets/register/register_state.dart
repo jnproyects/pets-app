@@ -9,7 +9,8 @@ class RegisterFormState extends Equatable {
   final bool isValid;
   final Name name;
   final Race race;
-  final Age age;
+  // final Age age;
+  final DateTime? age;
   final Sex sex;
   final Specie specie;
   final Size size;
@@ -24,7 +25,8 @@ class RegisterFormState extends Equatable {
     this.isValid = false,
     this.name = const Name.pure(),
     this.race = const Race.pure(),
-    this.age = const Age.pure(),
+    // this.age = const Age.pure(),
+    this.age,
     this.sex = const Sex.pure(),
     this.specie = const Specie.pure(),
     this.size = const Size.pure(),
@@ -39,7 +41,8 @@ class RegisterFormState extends Equatable {
     bool? isValid,
     Name? name,
     Race? race,
-    Age? age,
+    // Age? age,
+    DateTime? age,
     Sex? sex,
     Specie? specie,
     Size? size,

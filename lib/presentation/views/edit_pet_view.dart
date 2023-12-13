@@ -30,8 +30,32 @@ class EditPetView extends StatelessWidget {
     final petSize = registerCubit.state.size;
     final vaccines = registerCubit.state.vaccines;
     final petImages = registerCubit.state.images;
+    final age = registerCubit.state.age;
 
     final size = MediaQuery.of(context).size;
+
+    DateTime? selectedDate; 
+
+    if ( age == null && pet.age != "null" ) {
+      selectedDate = DateTime.parse( pet.age );
+    } else {
+      selectedDate = age;
+    }
+
+    Future<void> selectDate(BuildContext context) async {
+
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime( 2010 ),
+        lastDate: DateTime.now().toLocal(),
+      );
+
+      if (picked != null && picked != selectedDate) {
+        registerCubit.ageChanged( picked.toLocal() );
+      }
+
+    }
 
     return Center(
       child: Column(
@@ -200,6 +224,44 @@ class EditPetView extends StatelessWidget {
                   ),
           
                   const SizedBox( height: 15 ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.only( top: 20, bottom: 20, left: 10, right: 20 ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(15), bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15) ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.06),
+                                blurRadius: 10,
+                                offset: const Offset(0,5)
+                              )
+                            ]
+                          ),
+                          child: Text(
+                            ( age == null && pet.age == "null" ) ? "yyyy/mm/dd" : "${ selectedDate!.toLocal() }".split(' ')[0],
+                            style: const TextStyle( color: Colors.black26, fontSize: 16, fontWeight: FontWeight.bold ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox( width: 25 ),
+
+                      ElevatedButton(
+                        onPressed: () => selectDate(context),
+                        child: const Text('Change Birthdate'),
+                      ),
+
+                    ],
+                  ),
+
+                  const SizedBox( height: 15 ),
+                  
           
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -276,7 +338,6 @@ class EditPetView extends StatelessWidget {
 
 class _ButtonsFormEdit extends StatelessWidget {
   const _ButtonsFormEdit({
-    super.key,
     required this.pet,
   });
 
