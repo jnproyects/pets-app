@@ -580,16 +580,16 @@ class _BackgroundWavesLeftPainter extends CustomPainter {
     lapiz2.strokeWidth = 20;
 
     final path = Path();
-    final path2 = Path();
+    // final path2 = Path();
 
 
-    path.moveTo( 0, size.height * 0.4 );
-    path.quadraticBezierTo( size.width * 0.30, size.height * 0.85, 0, size.height );
-    path.lineTo( 0, size.height);
+    // path.moveTo( 0, size.height * 0.4 );
+    // path.quadraticBezierTo( size.width * 0.30, size.height * 0.85, 0, size.height );
+    // path.lineTo( 0, size.height);
 
-    path2.moveTo( 0, size.height * 0.4 );
-    path2.quadraticBezierTo( size.width * 0.40, size.height * 0.8, 0, size.height );
-    path2.lineTo( 0, size.height);
+    // path2.moveTo( 0, size.height * 0.4 );
+    // path2.quadraticBezierTo( size.width * 0.40, size.height * 0.8, 0, size.height );
+    // path2.lineTo( 0, size.height);
 
 
     // esquina superior derecha
@@ -598,7 +598,7 @@ class _BackgroundWavesLeftPainter extends CustomPainter {
     path.lineTo( size.width, 0 );
 
     canvas.drawPath(path, lapiz);
-    canvas.drawPath(path2, lapiz2);
+    // canvas.drawPath(path2, lapiz2);
   }
 
   @override

@@ -11,6 +11,8 @@ class CustomTextFormField extends StatelessWidget {
   final Function(String)? onChanged;
   final Function(String)? onFieldSubmitted;
   final String? Function(String?)? validator;
+  final int? maxLines;
+  final int? maxLength;
 
   final String? initialValue;
 
@@ -25,6 +27,8 @@ class CustomTextFormField extends StatelessWidget {
     this.onFieldSubmitted,
     this.validator, 
     this.initialValue,
+    this.maxLines = 1,
+    this.maxLength,
   });
 
   @override
@@ -59,6 +63,8 @@ class CustomTextFormField extends StatelessWidget {
         obscureText: obscureText,
         onFieldSubmitted: onFieldSubmitted,
         keyboardType: keyboardType,
+        maxLines: maxLines,
+        maxLength: maxLength,
         style: const TextStyle( fontSize: 20, color: Colors.black54 ),
         decoration: InputDecoration(
           floatingLabelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
@@ -67,7 +73,7 @@ class CustomTextFormField extends StatelessWidget {
           errorBorder: border.copyWith( borderSide: const BorderSide( color: Colors.transparent )),
           focusedErrorBorder: border.copyWith( borderSide: const BorderSide( color: Colors.transparent )),
           isDense: true,
-          label: label != null ? Text(label!) : null,
+          label: label != null ? Text( label! ) : null,
           hintText: hint,
           errorText: errorMessage,
           focusColor: colors.primary,

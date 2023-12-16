@@ -286,7 +286,8 @@ class Dots extends StatelessWidget {
     super.key, 
     required this.cantImages, 
     this.dotsUp = false, 
-    this.colorPrimario = Colors.blue, 
+    // this.colorPrimario = Colors.blue,
+    this.colorPrimario = const Color(0xff09B394),
     this.colorSecundario = Colors.grey, 
     this.bulletPrimario = 10, 
     this.bulletSecundario = 8

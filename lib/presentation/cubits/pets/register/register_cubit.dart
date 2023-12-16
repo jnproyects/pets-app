@@ -1,6 +1,5 @@
 import 'package:age_calculator/age_calculator.dart';
 import 'package:bloc/bloc.dart';
-import 'package:dart_date/dart_date.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
@@ -30,10 +29,6 @@ class RegisterCubit extends Cubit<RegisterFormState> {
     return _pageController;
   }
 
-  // disposePageController() {
-  //   _pageController.dispose();
-  // }
-
   String calculatePetAge( DateTime? ageValue ) {
 
     final birthdatePet = ageValue;
@@ -43,22 +38,17 @@ class RegisterCubit extends Cubit<RegisterFormState> {
     if ( birthdatePet != null ) {
       
       DateDuration duration = AgeCalculator.age(birthdatePet);
-      final List<String> formatedDuration = duration.toString().split(','); //[Years: 1,  Months: 1,  Days: 0]
+      final List<String> formatedDuration = duration.toString().trim().split(','); //[Years: 0,  Months: 0,  Days: 0]
 
-      final String years = ( formatedDuration[0].contains('0') )
-        ? ''
-        : "${formatedDuration[0].replaceFirst('Years: ', '')} year(s) ";
-      
-      final String months = ( formatedDuration[1].contains('0') ) 
-        ? '' 
-        : "${formatedDuration[1].replaceFirst('Months: ', '')} month(s)";
+      final yr = formatedDuration[0].trim().replaceFirst('Years: ', '');
+      final mnt = formatedDuration[1].trim().replaceFirst('Months: ', '');
+      final dys = formatedDuration[2].trim().replaceFirst('Days: ', '');
 
-      final String days = ( formatedDuration[2].contains('0') ) 
-        ? '' 
-        : "${formatedDuration[2].replaceFirst('Days: ', '')} day(s)";
+      final String years = ( int.parse(yr) > 0 ) ?  ( int.parse( yr ) == 1 ) ? '$yr year' :  '$yr years' : '';
+      final String months = ( int.parse(mnt) > 0 ) ? ( int.parse( mnt ) == 1 ) ? '$mnt month' :  '$mnt months' : '';
+      final String days = ( int.parse(dys) > 0 ) ? ( int.parse( dys ) == 1 ) ? '$dys day' :  '$dys days' : '';
 
-      
-      valor = "Age: $years $months  $days".replaceAll('  ', '');
+      valor = "$years $months $days".trim().replaceAll('  ', '');
     
     }
 
@@ -147,13 +137,14 @@ class RegisterCubit extends Cubit<RegisterFormState> {
     
     if ( state.images.isNotEmpty ){
       _pageController.jumpToPage( state.images.length );
+      // _pageController.jumpToPage( newImages.length );
     }
 
     emit(
       state.copyWith(
         images: [ ...state.images.where( ( image ) => ( image != 'assets/no-photo.png' ) ).toList(), ...newImages ],
         currentPage: state.images.length.toDouble(),
-        // initialPage: state.images.length + 1
+        // currentPage: newImages.length - 2,
       )
     );
 
@@ -197,6 +188,14 @@ class RegisterCubit extends Cubit<RegisterFormState> {
     );
   }
 
+  void observationsChanged( String value ) {
+    emit(
+      state.copyWith(
+        observations: value
+      )
+    );
+  }
+
 
   Future<Pet?> onSubmit({ Pet? pet }) async {
 
@@ -217,7 +216,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
       }
 
       if ( state.age == null ) {
-        ageChanged( DateTime.parse( pet!.age ));
+        if ( pet!.age != "null" ) ageChanged( DateTime.parse( pet.age ) );
       }
 
       if ( state.specie.value == '' && state.specie.errorMessage == null ) {
@@ -232,7 +231,9 @@ class RegisterCubit extends Cubit<RegisterFormState> {
         vaccinesChanged( pet!.vaccines );
       }
       
-      //  state.images.where((image) => image != 'assets/no-photo.png' ).toList();
+      if ( state.observations == null ) {
+        observationsChanged( pet!.observations! );
+      }
       
       if ( state.images.isEmpty ) imagesChanged( pet!.images );
 
@@ -282,7 +283,8 @@ class RegisterCubit extends Cubit<RegisterFormState> {
       specie: state.specie.value,
       size: state.size.value,
       vaccines: state.vaccines,
-      images: state.images.where( (image) => image != 'assets/no-photo.png' ).toList()
+      images: state.images.where( (image) => image != 'assets/no-photo.png' ).toList(),
+      observations: state.observations,
     );
 
   }

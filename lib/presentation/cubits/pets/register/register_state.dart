@@ -20,12 +20,13 @@ class RegisterFormState extends Equatable {
   final double currentPage;
   final int initialPage;
 
+  final String? observations;
+
   const RegisterFormState({
     this.formStatus = FormzSubmissionStatus.initial, 
     this.isValid = false,
     this.name = const Name.pure(),
     this.race = const Race.pure(),
-    // this.age = const Age.pure(),
     this.age,
     this.sex = const Sex.pure(),
     this.specie = const Specie.pure(),
@@ -34,6 +35,7 @@ class RegisterFormState extends Equatable {
     this.images = const[],
     this.currentPage = 0,
     this.initialPage = 0,
+    this.observations = '',
   });
 
   RegisterFormState copyWith({
@@ -41,7 +43,6 @@ class RegisterFormState extends Equatable {
     bool? isValid,
     Name? name,
     Race? race,
-    // Age? age,
     DateTime? age,
     Sex? sex,
     Specie? specie,
@@ -50,6 +51,7 @@ class RegisterFormState extends Equatable {
     List<String>? images,
     double? currentPage,
     int? initialPage,
+    String? observations,
   }) {
     return RegisterFormState(
       formStatus: formStatus ?? this.formStatus,
@@ -63,11 +65,12 @@ class RegisterFormState extends Equatable {
       vaccines: vaccines ?? this.vaccines,
       images: images ?? this.images,
       currentPage: currentPage ?? this.currentPage,
-      initialPage: initialPage ?? this.initialPage
+      initialPage: initialPage ?? this.initialPage,
+      observations: observations ?? this.observations,
     );
   }
 
   @override
-  List<Object?> get props => [ formStatus, isValid, name, race, age, sex, specie, size, vaccines, images, currentPage, initialPage ];
+  List<Object?> get props => [ formStatus, isValid, name, race, age, sex, specie, size, vaccines, images, currentPage, initialPage, observations ];
 }
 

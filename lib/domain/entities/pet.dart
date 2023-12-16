@@ -15,6 +15,7 @@ class Pet {
   final String size;
   final bool? vaccines;
   final List<String> images;
+  final String? observations;
 
   Pet({
     this.id,
@@ -25,7 +26,8 @@ class Pet {
     required this.specie, 
     required this.size, 
     required this.vaccines, 
-    required this.images
+    required this.images,
+    required this.observations,
   });
 
   

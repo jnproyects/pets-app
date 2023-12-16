@@ -75,7 +75,7 @@ class _PetDetailsEditScreenState extends State<PetDetailsEditScreen> {
         ),
     
         floatingActionButton: ( !petsCubit.state.isEdit ) ? FloatingActionButton(
-          backgroundColor: const Color(0xFF615AAB),
+          // backgroundColor: const Color(0xFF615AAB),
           onPressed: () => context.go('/'),
           elevation: 0,
           child: const Icon(

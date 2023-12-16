@@ -32,28 +32,33 @@ const PetSchema = CollectionSchema(
       name: r'name',
       type: IsarType.string,
     ),
-    r'race': PropertySchema(
+    r'observations': PropertySchema(
       id: 3,
+      name: r'observations',
+      type: IsarType.string,
+    ),
+    r'race': PropertySchema(
+      id: 4,
       name: r'race',
       type: IsarType.string,
     ),
     r'sex': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'sex',
       type: IsarType.string,
     ),
     r'size': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'size',
       type: IsarType.string,
     ),
     r'specie': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'specie',
       type: IsarType.string,
     ),
     r'vaccines': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'vaccines',
       type: IsarType.bool,
     )
@@ -87,6 +92,12 @@ int _petEstimateSize(
     }
   }
   bytesCount += 3 + object.name.length * 3;
+  {
+    final value = object.observations;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.race.length * 3;
   bytesCount += 3 + object.sex.length * 3;
   bytesCount += 3 + object.size.length * 3;
@@ -103,11 +114,12 @@ void _petSerialize(
   writer.writeString(offsets[0], object.age);
   writer.writeStringList(offsets[1], object.images);
   writer.writeString(offsets[2], object.name);
-  writer.writeString(offsets[3], object.race);
-  writer.writeString(offsets[4], object.sex);
-  writer.writeString(offsets[5], object.size);
-  writer.writeString(offsets[6], object.specie);
-  writer.writeBool(offsets[7], object.vaccines);
+  writer.writeString(offsets[3], object.observations);
+  writer.writeString(offsets[4], object.race);
+  writer.writeString(offsets[5], object.sex);
+  writer.writeString(offsets[6], object.size);
+  writer.writeString(offsets[7], object.specie);
+  writer.writeBool(offsets[8], object.vaccines);
 }
 
 Pet _petDeserialize(
@@ -121,11 +133,12 @@ Pet _petDeserialize(
     id: id,
     images: reader.readStringList(offsets[1]) ?? [],
     name: reader.readString(offsets[2]),
-    race: reader.readString(offsets[3]),
-    sex: reader.readString(offsets[4]),
-    size: reader.readString(offsets[5]),
-    specie: reader.readString(offsets[6]),
-    vaccines: reader.readBoolOrNull(offsets[7]),
+    observations: reader.readStringOrNull(offsets[3]),
+    race: reader.readString(offsets[4]),
+    sex: reader.readString(offsets[5]),
+    size: reader.readString(offsets[6]),
+    specie: reader.readString(offsets[7]),
+    vaccines: reader.readBoolOrNull(offsets[8]),
   );
   return object;
 }
@@ -144,7 +157,7 @@ P _petDeserializeProp<P>(
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
@@ -152,6 +165,8 @@ P _petDeserializeProp<P>(
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
+      return (reader.readString(offset)) as P;
+    case 8:
       return (reader.readBoolOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -784,6 +799,152 @@ extension PetQueryFilter on QueryBuilder<Pet, Pet, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'observations',
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'observations',
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'observations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'observations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'observations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'observations',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'observations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'observations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'observations',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'observations',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'observations',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterFilterCondition> observationsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'observations',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Pet, Pet, QAfterFilterCondition> raceEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1351,6 +1512,18 @@ extension PetQuerySortBy on QueryBuilder<Pet, Pet, QSortBy> {
     });
   }
 
+  QueryBuilder<Pet, Pet, QAfterSortBy> sortByObservations() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'observations', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterSortBy> sortByObservationsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'observations', Sort.desc);
+    });
+  }
+
   QueryBuilder<Pet, Pet, QAfterSortBy> sortByRace() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'race', Sort.asc);
@@ -1449,6 +1622,18 @@ extension PetQuerySortThenBy on QueryBuilder<Pet, Pet, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Pet, Pet, QAfterSortBy> thenByObservations() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'observations', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Pet, Pet, QAfterSortBy> thenByObservationsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'observations', Sort.desc);
+    });
+  }
+
   QueryBuilder<Pet, Pet, QAfterSortBy> thenByRace() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'race', Sort.asc);
@@ -1530,6 +1715,13 @@ extension PetQueryWhereDistinct on QueryBuilder<Pet, Pet, QDistinct> {
     });
   }
 
+  QueryBuilder<Pet, Pet, QDistinct> distinctByObservations(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'observations', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Pet, Pet, QDistinct> distinctByRace(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1586,6 +1778,12 @@ extension PetQueryProperty on QueryBuilder<Pet, Pet, QQueryProperty> {
   QueryBuilder<Pet, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<Pet, String?, QQueryOperations> observationsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'observations');
     });
   }
 

@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: const EdgeInsets.only( top: 30 ),
                 child: FilledButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all( AppTheme.primary )
+                    backgroundColor: MaterialStateProperty.all( Color(0xff09B394) )
                   ),
                   onPressed: () => context.push('/add-pet'),
                   child: const Text(

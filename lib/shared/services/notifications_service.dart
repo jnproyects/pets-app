@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pets_app/config/config.dart';
 
 class NotificationsService {
 
@@ -27,17 +28,20 @@ class NotificationsService {
           actions: [
 
             FilledButton(
-              // onPressed: () => context.pop(),
-              // onPressed: (){},
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel')
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all( AppTheme.primary ),
+              ),
+              child: const Text('Cancel'),
+              
             ),
 
             TextButton(
-              // onPressed: () => context.pop(), 
-              // onPressed: (){},
               onPressed: () => Navigator.pop(context, 'ok'),
-              child: Text(okButtonText, style: const TextStyle( color: Colors.red ))
+              child: Text(
+                okButtonText, 
+                style: const TextStyle( color: Colors.red ),
+              )
             )
 
           ],
@@ -57,12 +61,12 @@ class NotificationsService {
 
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar', style: TextStyle( color: Colors.red ),)
+              child: const Text('Cancel', style: TextStyle( color: Colors.red ),)
             ),
 
             TextButton(
               onPressed: () => Navigator.pop(context), 
-              child: const Text('Aceptar')
+              child: Text(okButtonText, style: const TextStyle( color: Colors.red ))
             )
           ],
 
@@ -78,7 +82,7 @@ class NotificationsService {
     // ScaffoldMessenger.of(context).clearSnackBars();
 
     final snackbar = SnackBar(
-      backgroundColor: (error) ? Colors.red.withOpacity(0.9) : Colors.green ,
+      backgroundColor: (error) ? Colors.red.withOpacity(0.9) : Color(0xff09B394) ,
       content: Text(
         mensaje,
         style: const TextStyle(

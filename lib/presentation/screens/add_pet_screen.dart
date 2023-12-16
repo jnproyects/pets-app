@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pets_app/config/helpers/helpers.dart';
 
 import 'package:pets_app/presentation/cubits/cubits.dart';
 import 'package:pets_app/presentation/widgets/widgets.dart';
@@ -157,7 +158,7 @@ class _AddPetForm extends StatelessWidget {
                       
                             }, 
                             icon: const Icon( Icons.photo_library_outlined ),
-                            iconSize: 30,
+                            iconSize: 40,
                             color: Colors.black,
                           ),
 
@@ -177,7 +178,7 @@ class _AddPetForm extends StatelessWidget {
                               registerCubit.imagesChanged( [ photoPath ] );
                             }, 
                             icon: const Icon( Icons.camera_alt_outlined ),
-                            iconSize: 30,
+                            iconSize: 40,
                             color: Colors.black,
                           ),
                         ]
@@ -229,7 +230,7 @@ class _AddPetForm extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.only( top: 20, bottom: 20, left: 10, right: 20 ),
                             decoration: BoxDecoration(
-                              color: Colors.grey[200],
+                              color: Colors.grey[100],
                               borderRadius: const BorderRadius.only(topLeft: Radius.circular(15), bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15) ),
                               boxShadow: [
                                 BoxShadow(
@@ -240,19 +241,24 @@ class _AddPetForm extends StatelessWidget {
                               ]
                             ),
                             child: Text(
-                              ( selectedDate == null ) ? "yyyy/mm/dd" : "${ selectedDate.toLocal() }".split(' ')[0],
-                              style: const TextStyle( color: Colors.black26, fontSize: 16, fontWeight: FontWeight.bold ),
+                              ( selectedDate == null ) ? "Select Birthdate" : HumanFormats.shortDate( selectedDate ),
+                              style: const TextStyle( color: Colors.black45, fontSize: 16, fontWeight: FontWeight.bold ),
                               
                             ),
                           ),
                         ),
 
-                        const SizedBox( width: 30 ),
-
-                        ElevatedButton(
-                          onPressed: () => selectDate(context),
-                          child: const Text('Select Birthdate'),
-                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric( horizontal: 20 ),
+                          child: IconButton(
+                            onPressed: () => selectDate(context),
+                            icon: const Icon(
+                              Icons.calendar_month_outlined,
+                              size: 40,
+                              // color: Color(0xff0A74D0),
+                            )
+                          ),
+                        )
 
                       ],
                     ),
@@ -307,15 +313,27 @@ class _AddPetForm extends StatelessWidget {
                     const SizedBox(height: 15),
             
                     CheckboxListTile(
+                      activeColor: Colors.blue,
                       title: const Text(
                         'Vaccines up to date?',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(
+                          fontSize: 16
+                        ),
                       ),
                       value: vaccines ?? false,
                       onChanged: ( value ) => registerCubit.vaccinesChanged( value ),
                       
                     ),
             
+                    const SizedBox(height: 15),
+
+                    CustomTextFormField(
+                      label: 'Observations...',
+                      onChanged: ( value ) => registerCubit.observationsChanged( value.trim() ),
+                      maxLines: 5,
+                      maxLength: 200,
+                    ),
+                    
                     const SizedBox(height: 15),
                     
                     const _ButtonsForm(),
@@ -360,7 +378,7 @@ class _ButtonsForm extends StatelessWidget {
             style: ButtonStyle(
               minimumSize: MaterialStateProperty.all( Size( size.width * 0.8, 50) ),
               // backgroundColor: MaterialStateProperty.all( Colors.deepPurple[400] ),
-              backgroundColor: MaterialStateProperty.all( Colors.deepPurple[400] ),
+              // backgroundColor: MaterialStateProperty.all( Colors.deepPurple[400] ),
               iconSize: MaterialStateProperty.all( 30 ),
             ),
             onPressed: () async {
