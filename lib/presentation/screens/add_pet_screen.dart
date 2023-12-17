@@ -358,6 +358,11 @@ class _ButtonsForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+
+    final registerCubit = context.watch<RegisterCubit>();
+    final petsCubit = context.read<PetsCubit>();
+
+    final bool isPosting = ( registerCubit.state.formStatus == FormzSubmissionStatus.posting );
     final size = MediaQuery.of(context).size;
 
     return Padding(
@@ -368,26 +373,29 @@ class _ButtonsForm extends StatelessWidget {
         children: [
     
           ElevatedButton.icon(
-            label: const Text(
-              'Save',
-              style: TextStyle(
+            label: Text(
+              ( isPosting ) ? 'Saving...' : 'Save',
+              style: const TextStyle(
                 fontSize: 16
               ),
             ),
-            icon: const Icon( Icons.save ),
+            icon: ( isPosting )
+              ? const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: CircularProgressIndicator(),
+              ) 
+              : const Icon( Icons.save ),
             style: ButtonStyle(
               minimumSize: MaterialStateProperty.all( Size( size.width * 0.8, 50) ),
-              // backgroundColor: MaterialStateProperty.all( Colors.deepPurple[400] ),
-              // backgroundColor: MaterialStateProperty.all( Colors.deepPurple[400] ),
               iconSize: MaterialStateProperty.all( 30 ),
             ),
-            onPressed: () async {
+            onPressed: ( isPosting ) ? null : () async {
               
-              final pet = await context.read<RegisterCubit>().onSubmit();
+              final pet = await registerCubit.onSubmit();
     
               if ( pet != null  ) {
     
-                final bool result = await context.read<PetsCubit>().savePet( pet );
+                final bool result = await petsCubit.savePet( pet );
                 
                 if ( result ) {
     

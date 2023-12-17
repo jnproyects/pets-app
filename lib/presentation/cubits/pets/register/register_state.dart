@@ -35,7 +35,7 @@ class RegisterFormState extends Equatable {
     this.images = const[],
     this.currentPage = 0,
     this.initialPage = 0,
-    this.observations = '',
+    this.observations,
   });
 
   RegisterFormState copyWith({

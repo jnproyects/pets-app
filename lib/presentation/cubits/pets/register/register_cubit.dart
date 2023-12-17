@@ -232,15 +232,17 @@ class RegisterCubit extends Cubit<RegisterFormState> {
       }
       
       if ( state.observations == null ) {
-        observationsChanged( pet!.observations! );
+
+        ( pet!.observations != null ) 
+          ? observationsChanged( pet.observations! )
+          : '';
       }
       
       if ( state.images.isEmpty ) imagesChanged( pet!.images );
 
     }
 
-    if ( state.vaccines == null ) vaccinesChanged( false );
-    
+    if ( state.vaccines == null ) vaccinesChanged( false );    
     
     emit(
       state.copyWith(
@@ -266,13 +268,14 @@ class RegisterCubit extends Cubit<RegisterFormState> {
       )
     );
 
-    await Future<void>.delayed(const Duration(seconds: 1));
-
     emit(
       state.copyWith(
         formStatus: FormzSubmissionStatus.posting
       )
     );
+
+    await Future<void>.delayed(const Duration(seconds: 1));
+
 
     return Pet(
       id: pet?.id,
