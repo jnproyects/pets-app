@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       routerConfig: appRouter,
       theme: AppTheme.ligthTheme,
-      // theme: AppTheme.darkTheme,
     );
   }
 }

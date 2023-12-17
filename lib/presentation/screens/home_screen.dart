@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   loadPets() async {
     isLoading = true;
-
     await context.read<PetsCubit>().loadPets();
     isLoading = false;
   }
@@ -40,9 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     final pets = context.watch<PetsCubit>().state.pets;
-
-    // puede ser otra forma de realizar la validación
-    // Visibility(child: child)
 
     if ( isLoading ) {
       return const Scaffold(
@@ -96,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: const EdgeInsets.only( top: 30 ),
                 child: FilledButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all( Color(0xff09B394) )
+                    backgroundColor: MaterialStateProperty.all( const Color(0xff09B394) )
                   ),
                   onPressed: () => context.push('/add-pet'),
                   child: const Text(
