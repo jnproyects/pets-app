@@ -25,6 +25,8 @@ class IsarLocalDbDataSource extends LocalStorageDataSource {
       );
     }
     return Future.value( Isar.getInstance() );
+
+
   }
 
 
@@ -62,7 +64,7 @@ class IsarLocalDbDataSource extends LocalStorageDataSource {
       if ( petToUpdate != null ) {
         await isar.pets.put( pet );
       } else {
-        print('Pet with ID ${pet.id!} not found.');
+        throw 'Pet with ID ${pet.id!} not found.';
       }
 
     });
@@ -76,8 +78,7 @@ class IsarLocalDbDataSource extends LocalStorageDataSource {
 
     await isar.writeTxn(() async {
 
-      final success = await isar.pets.delete( petId );
-      print('Pet deleted: $success');
+      await isar.pets.delete( petId );
 
     });
 

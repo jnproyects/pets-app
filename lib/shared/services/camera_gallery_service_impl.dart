@@ -5,41 +5,48 @@ import 'camera_gallery_service.dart';
 class CameraGalleryServiceImpl extends CameraGalleryService {
 
   final ImagePicker _picker = ImagePicker();
-
-  //TODO: manejar excepciones
   
   /// For example, if you encounter the error message “PlatformException(permission_denied, photo library access not granted, null),” you can prompt the user to grant the necessary permissions to access their photo library.
+  /// Also, make sure you are handling the PermissionDeniedException, PickImageException correctly in your code.
 
   @override
   Future<String?> selectPhoto() async {
 
-    final XFile? photo = await _picker.pickImage(
-      source: ImageSource.gallery, 
-      maxWidth: 1920,
-      maxHeight: 1280,
-      imageQuality: 80
-    );
-    if ( photo == null ) return null;
+    try {
 
-    // print("Existe una nueva image ${ photo.path }");
-    return photo.path;
+      final XFile? photo = await _picker.pickImage(
+        source: ImageSource.gallery, 
+        maxWidth: 1920,
+        maxHeight: 1280,
+        imageQuality: 80
+      );
+      if ( photo == null ) return null;
+      return photo.path;
+
+    } catch (e) {
+      throw 'Pick image error: $e';
+    }
     
   }
 
   @override
   Future<String?> takePhoto() async {
    
-    final XFile? photo = await _picker.pickImage(
-      source: ImageSource.camera, 
-      preferredCameraDevice: CameraDevice.rear,
-      maxWidth: 1920,
-      maxHeight: 1280,
-      imageQuality: 80
-    );
-    if ( photo == null ) return null;
+    try {
+      
+      final XFile? photo = await _picker.pickImage(
+        source: ImageSource.camera, 
+        preferredCameraDevice: CameraDevice.rear,
+        maxWidth: 1920,
+        maxHeight: 1280,
+        imageQuality: 80
+      );
+      if ( photo == null ) return null;
+      return photo.path;
 
-    // print("Existe una nueva image ${ photo.path }");
-    return photo.path;
+    } catch (e) {
+      throw 'Pick image error: $e';
+    }
 
   }
   

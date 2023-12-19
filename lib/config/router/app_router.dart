@@ -27,17 +27,6 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/pet-details/:id',
       name: PetDetailsEditScreen.routeName,
-      // builder: (context, state) {
-        
-        // no usar en este caso
-        // final Pet pet = state.extra as Pet;
-        // return PetDetailsEditScreen( pet: pet );
-
-        // usar
-        // final petId = state.pathParameters['id'] ?? 'no-id';
-        // return PetDetailsEditScreen( petId: int.parse(petId) );
-
-      // },
       pageBuilder: (context, state) => customTransitionPage(
         state,
         PetDetailsEditScreen( petId: int.parse( state.pathParameters['id'] ?? 'no-id' ) )
@@ -68,47 +57,6 @@ CustomTransitionPage<void> customTransitionPage(GoRouterState state, Widget chil
           ).animate( curvedAnimation ),
           child: child,
         );
-
-        // return SlideTransition(
-        //   position: Tween<Offset>(
-        //     begin: const Offset(0.5, 1.0),
-        //     end: Offset.zero,
-        //   ).animate( curvedAnimation ),
-        //   child: child,
-        // );
-
-        // return ScaleTransition(
-        //   scale: Tween<double>(
-        //     begin: 0.0,
-        //     end: 1.0
-        //   ).animate( curvedAnimation ),
-        //   child: child,
-        // );
-
-        // return RotationTransition(
-        //   turns: Tween<double>(
-        //     begin: 0.0,
-        //     end: 1.0
-        //   ).animate( curvedAnimation ),
-        //   child: child,
-        // );
-
-
-        // return RotationTransition(
-        //   turns: Tween<double>(
-        //     begin: 0.0,
-        //     end: 1.0
-        //   ).animate( curvedAnimation ),
-        //   child: FadeTransition(
-        //     opacity: Tween<double>(
-        //       begin: 0.0,
-        //       end: 1.0
-        //     ).animate( curvedAnimation ),
-        //     child: child,
-        //   ),
-        // );
-
-
 
       }
     );

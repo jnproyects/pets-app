@@ -1,16 +1,27 @@
-# pets_app
+# PetsApp
 
-A new Flutter project.
+Aplicación móvil desarrollada en **Flutter** que permite registrar y gestionar la información básica de tus **mascotas** (perros y gatos).
 
-## Getting Started
+# Dev
 
-This project is a starting point for a Flutter application.
+Si hay cambios en la entidad, se debe ejecutar el comando:
+```
+flutter pub run build_runner build
+```
 
-A few resources to get you started if this is your first Flutter project:
+# Prod
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Para cambiar **nombre** de la app:
+```
+flutter pub run change_app_package_name:main com.juanpabmgg.pets_app
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Para cambiar el **ícono** de la app:
+```
+flutter pub run flutter_launcher_icons
+```
+
+Generar AAB
+```
+flutter build appbundle
+```
