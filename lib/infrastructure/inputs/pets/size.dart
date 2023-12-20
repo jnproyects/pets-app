@@ -16,7 +16,7 @@ class Size extends FormzInput<String, SizeError> {
   String? get errorMessage {
     
     if ( isValid || isPure ) return null;
-    if ( displayError == SizeError.empty ) return 'Required';
+    if ( displayError == SizeError.empty ) return 'Size is Required';
 
     return null;
   }

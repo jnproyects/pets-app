@@ -105,7 +105,7 @@ class _SlidesState extends State<_Slides> {
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
                   child: FadeInImage(
                     fit: BoxFit.cover,
-                    placeholder: const AssetImage('assets/footprint-loading.gif'), 
+                    placeholder: const AssetImage('assets/loading-small-1.gif'), 
                     image: imageProvider
                   ),
                 ),
@@ -162,7 +162,7 @@ class _SlidesState extends State<_Slides> {
                   tag: 'pet_image_hero_tag',
                   child: FadeInImage(
                     fit: BoxFit.cover,
-                    placeholder: const AssetImage('assets/footprint-loading.gif'), 
+                    placeholder: const AssetImage('assets/loading-small-1.gif'), 
                     image: imageProvider
                   ),
                 ),
@@ -393,7 +393,7 @@ class _FullScreenPetImage extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 fit: BoxFit.contain,
-                placeholder: const AssetImage('assets/footprint-loading.gif'),
+                placeholder: const AssetImage('assets/loading-small-1.gif'),
                 image: imageUrl
               ),
             ),

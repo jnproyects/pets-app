@@ -46,7 +46,7 @@ class CustomCard extends StatelessWidget {
         
             FadeInImage(
               image: imageProvider,
-              placeholder: const AssetImage('assets/footprint-loading.gif'),
+              placeholder: const AssetImage('assets/loading-small-1.gif'),
               width: double.infinity,
               height: 350,
               fit: BoxFit.cover,

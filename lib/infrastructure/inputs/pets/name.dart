@@ -15,7 +15,7 @@ class Name extends FormzInput<String, NameError> {
   String? get errorMessage {
     
     if ( isValid || isPure ) return null;
-    if ( displayError == NameError.empty ) return 'Required';
+    if ( displayError == NameError.empty ) return 'Name is Required';
     // if ( displayError == NameError.length ) return 'Mínimo 3 caracteres';
 
     return null;

@@ -15,8 +15,7 @@ class Race extends FormzInput<String, RaceError> {
   String? get errorMessage {
     
     if ( isValid || isPure ) return null;
-    if ( displayError == RaceError.empty ) return 'Required';
-    // if ( displayError == RaceError.length ) return 'Mínimo 3 caracteres';
+    if ( displayError == RaceError.empty ) return 'Race is Required';
     if ( displayError == RaceError.length ) return 'Max 20 characters';
 
     return null;

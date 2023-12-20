@@ -16,7 +16,7 @@ class Sex extends FormzInput<String, SexError> {
   String? get errorMessage {
     
     if ( isValid || isPure ) return null;
-    if ( displayError == SexError.empty ) return 'Required';
+    if ( displayError == SexError.empty ) return 'Sex is Required';
 
     return null;
   }

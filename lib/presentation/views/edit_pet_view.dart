@@ -348,97 +348,12 @@ class EditPetView extends StatelessWidget {
                     
                   const SizedBox(height: 15),
             
-                  _ButtonsFormEdit(pet: pet),
+                  SaveFormButton( pet: pet, isEditForm: true ),
             
                 ],
               )
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ButtonsFormEdit extends StatelessWidget {
-  const _ButtonsFormEdit({
-    required this.pet,
-  });
-
-  final Pet pet;
-
-  @override
-  Widget build(BuildContext context) {
-
-    final registerCubit = context.watch<RegisterCubit>();
-    final petsCubit = context.read<PetsCubit>();
-
-    final bool isPosting = ( registerCubit.state.formStatus == FormzSubmissionStatus.posting );
-    final size = MediaQuery.of(context).size;
-
-    return Padding(
-      padding: const EdgeInsets.only( bottom: 50),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-            
-          ElevatedButton.icon(
-              
-            label: Text(
-              ( isPosting ) ? 'Saving...' : 'Save',
-              style: const TextStyle(
-                fontSize: 16
-              ),
-            ),
-            icon: ( isPosting )
-              ? const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: CircularProgressIndicator(),
-              ) 
-              : const Icon( Icons.save ),
-            style: ButtonStyle(
-              minimumSize: MaterialStateProperty.all( Size( size.width * 0.8, 50) ),
-              iconSize: MaterialStateProperty.all( 30 ),
-            ),
-            onPressed: ( isPosting ) ? null : () async {
-        
-              final Pet? petResp = await registerCubit.onSubmit( pet: pet );
-      
-              if ( petResp != null ) {
-      
-                final result = await petsCubit.editPet( petResp );
-      
-                if ( result ) {
-      
-                  NotificationsService.showCustomSnackbar(
-                    context: context, 
-                    mensaje: 'Changes saved successfully!'
-                  );
-      
-                  petsCubit.isEditingToggle();
-                  context.push(
-                    '/pet-details/${ petResp.id }'
-                  );
-      
-      
-                } else {
-      
-                  NotificationsService.showCustomSnackbar(
-                    context: context, 
-                    mensaje: 'Error editing information',
-                    error: true
-                  );
-                  
-                }
-                
-              } 
-        
-            },
-          ),
-
-          const SizedBox( height: 30 ),
-            
         ],
       ),
     );

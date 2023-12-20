@@ -16,7 +16,7 @@ class Specie extends FormzInput<String, SpecieError> {
   String? get errorMessage {
     
     if ( isValid || isPure ) return null;
-    if ( displayError == SpecieError.empty ) return 'Required';
+    if ( displayError == SpecieError.empty ) return 'Specie is Required';
 
     return null;
   }
