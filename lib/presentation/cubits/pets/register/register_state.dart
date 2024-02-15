@@ -22,6 +22,8 @@ class RegisterFormState extends Equatable {
 
   final String? observations;
 
+  final bool isEdit;
+
   const RegisterFormState({
     this.formStatus = FormzSubmissionStatus.initial, 
     this.isValid = false,
@@ -36,6 +38,7 @@ class RegisterFormState extends Equatable {
     this.currentPage = 0,
     this.initialPage = 0,
     this.observations,
+    this.isEdit = false,
   });
 
   RegisterFormState copyWith({
@@ -52,6 +55,7 @@ class RegisterFormState extends Equatable {
     double? currentPage,
     int? initialPage,
     String? observations,
+    bool? isEdit,
   }) {
     return RegisterFormState(
       formStatus: formStatus ?? this.formStatus,
@@ -67,10 +71,11 @@ class RegisterFormState extends Equatable {
       currentPage: currentPage ?? this.currentPage,
       initialPage: initialPage ?? this.initialPage,
       observations: observations ?? this.observations,
+      isEdit: isEdit ?? this.isEdit,
     );
   }
 
   @override
-  List<Object?> get props => [ formStatus, isValid, name, race, age, sex, specie, size, vaccines, images, currentPage, initialPage, observations ];
+  List<Object?> get props => [ formStatus, isValid, name, race, age, sex, specie, size, vaccines, images, currentPage, initialPage, observations, isEdit ];
 }
 

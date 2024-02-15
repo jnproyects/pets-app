@@ -142,7 +142,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
 
     emit(
       state.copyWith(
-        images: [ ...state.images.where( ( image ) => ( image != 'assets/no-photo.png' ) ).toList(), ...newImages ],
+        images: [ ...state.images.where( ( image ) => ( image != 'assets/no-photo.jpg' ) ).toList(), ...newImages ],
         currentPage: state.images.length.toDouble(),
         // currentPage: newImages.length - 2,
       )
@@ -152,7 +152,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
 
   void deletePetImage( { required List<String> images, required String imagePath } ) {
 
-    String noPhoto = 'assets/no-photo.png';
+    String noPhoto = 'assets/no-photo.jpg';
 
     if ( images.length == 1 ) {
       images.add(noPhoto);
@@ -192,6 +192,16 @@ class RegisterCubit extends Cubit<RegisterFormState> {
     emit(
       state.copyWith(
         observations: value
+      )
+    );
+  }
+
+  void isEditingToggle() {
+    
+    emit(
+      state.copyWith(
+        isEdit: !state.isEdit,
+        formStatus: FormzSubmissionStatus.initial
       )
     );
   }
@@ -274,9 +284,6 @@ class RegisterCubit extends Cubit<RegisterFormState> {
       )
     );
 
-    await Future<void>.delayed(const Duration(seconds: 1));
-
-
     return Pet(
       id: pet?.id,
       name: state.name.value, 
@@ -286,7 +293,7 @@ class RegisterCubit extends Cubit<RegisterFormState> {
       specie: state.specie.value,
       size: state.size.value,
       vaccines: state.vaccines,
-      images: state.images.where( (image) => image != 'assets/no-photo.png' ).toList(),
+      images: state.images.where( (image) => image != 'assets/no-photo.jpg' ).toList(),
       observations: state.observations,
     );
 

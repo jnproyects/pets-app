@@ -26,7 +26,7 @@ class ImageGallery extends StatelessWidget {
         child: ClipRRect(
           borderRadius: const BorderRadius.all( Radius.circular(20) ),
           child: Image.asset(
-            'assets/no-photo.png', 
+            'assets/no-photo.jpg', 
             fit: BoxFit.cover
           )
         ),
@@ -112,7 +112,7 @@ class _SlidesState extends State<_Slides> {
               ),
       
               // gradient y sombra sólo si existen fotos
-              if ( imagePath != 'assets/no-photo.png' )
+              if ( imagePath != 'assets/no-photo.jpg' )
       
                 const CustomGradient(
                   colors: [
@@ -136,6 +136,7 @@ class _SlidesState extends State<_Slides> {
                     icon: const Icon(
                       Icons.delete,
                       size: 35,
+                      semanticLabel: 'delete image',
                     ),
                     onPressed: (){
                       context.read<RegisterCubit>().deletePetImage( images: widget.images, imagePath: imagePath );
@@ -209,7 +210,8 @@ class _SlidesState extends State<_Slides> {
                 icon: const Icon(
                   Icons.zoom_in,
                   color: Colors.white70, 
-                  size: 35
+                  size: 35,
+                  semanticLabel: 'zoom image',
                 )
               ),
             ),

@@ -3,11 +3,11 @@ part of 'pets_cubit.dart';
 class PetsState extends Equatable {
 
   final List<Pet> pets;
-  final bool isEdit;
+  // final bool isEdit;
   
   const PetsState({
     this.pets = const[],
-    this.isEdit = false,
+    // this.isEdit = false,
   });
  
   PetsState copyWith({
@@ -15,10 +15,10 @@ class PetsState extends Equatable {
     bool? isEdit,
   }) => PetsState(
     pets: pets ?? this.pets,
-    isEdit: isEdit ?? this.isEdit,
+    // isEdit: isEdit ?? this.isEdit,
   );
 
   @override
-  List<Object> get props => [ pets, isEdit ];
+  List<Object> get props => [ pets ];
 
 }

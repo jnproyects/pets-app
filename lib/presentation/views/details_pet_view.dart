@@ -32,11 +32,25 @@ class DetailsPetView extends StatelessWidget {
     final registerCubit = context.watch<RegisterCubit>();
 
     return Padding(
-      padding: const EdgeInsets.only( top: 50 ),
+      padding: const EdgeInsets.only( top: 5 ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+      
+          IconButton(
+            onPressed: () => context.go('/'),
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white,
+              size: 25,
+              semanticLabel: 'go back',
+            ),
+          ),
+      
+          const SizedBox(
+            height: 50,
+          ),
           
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -60,7 +74,7 @@ class DetailsPetView extends StatelessWidget {
               ),
             
               PopupMenuButton(
-                iconColor: Colors.white,
+                iconColor: Colors.black,
                 iconSize: 35,
                 padding: const EdgeInsets.only( right: 15),
                 itemBuilder: ( context ) => _petDetailsMenuItems(context)
@@ -97,7 +111,7 @@ class DetailsPetView extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
+      
                     RichText(
                       text: TextSpan(
                         text: 'Specie: ',
@@ -127,7 +141,7 @@ class DetailsPetView extends StatelessWidget {
                   children: [
                     
                     
-
+      
                     RichText(
                       text: TextSpan(
                         text: 'Race: ',
@@ -155,7 +169,7 @@ class DetailsPetView extends StatelessWidget {
             ),
           ),
           
-
+      
           // const SizedBox(
           //   height: 10,
           // ),
@@ -227,8 +241,8 @@ class DetailsPetView extends StatelessWidget {
                 
       PopupMenuItem<PetDetailsOptions>(
         onTap: () {
-          context.read<PetsCubit>().isEditingToggle();
-          // context.read<RegisterCubit>().disposePageController;
+          context.read<RegisterCubit>().isEditingToggle();
+          // context.read<PetsCubit>().isEditingToggle();
         },
         value: PetDetailsOptions.edit,
         child: const Text('Edit'),
@@ -245,15 +259,23 @@ class DetailsPetView extends StatelessWidget {
           );
 
           if ( resp == 'ok' ) {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const FullScreenLoader(),
+            ));
+            
             await context.read<PetsCubit>().deletePet( pet.id! );              
-            // await petsCubit.deletePet( pet.id! );   
+            
 
-            context.go('/');
+            // context.pushReplacement('/');
+            context.pop();
 
             NotificationsService.showCustomSnackbar(
               context: context, 
               mensaje: 'Pet information removed'
             );
+
+            Navigator.pop(context);
+
           }
         },
         value: PetDetailsOptions.delete,
@@ -265,4 +287,6 @@ class DetailsPetView extends StatelessWidget {
   }
 
 }
+
+
 

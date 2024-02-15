@@ -67,10 +67,12 @@ class EditPetView extends StatelessWidget {
             alignment: Alignment.bottomLeft,
             padding: const EdgeInsets.only( left: 10 ),
             margin: const EdgeInsets.only( top: 5 ),
-            child: BackButton(
-              style: ButtonStyle(
-                iconSize: MaterialStateProperty.all( 30 ),
-                iconColor: MaterialStateProperty.all( Colors.black )
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                color: Colors.black,
+                size: 25,
+                semanticLabel: 'go back',
               ),
               onPressed: () async {
 
@@ -88,7 +90,8 @@ class EditPetView extends StatelessWidget {
                     '/pet-details/${ pet.id }'
                   );
 
-                  petsCubit.isEditingToggle();
+                  // petsCubit.isEditingToggle();
+                  registerCubit.isEditingToggle();
                 }
 
               }
@@ -130,7 +133,10 @@ class EditPetView extends StatelessWidget {
                     : registerCubit.imagesChanged( [ photoPath ] );
           
                 }, 
-                icon: const Icon( Icons.photo_library_outlined ),
+                icon: const Icon(
+                  Icons.photo_library_outlined,
+                  semanticLabel: 'Select Photo'
+                ),
                 iconSize: 40,
                 color: Colors.white,
               ),
@@ -153,7 +159,10 @@ class EditPetView extends StatelessWidget {
                     ? registerCubit.imagesChanged( [ ...pet.images, photoPath ] )
                     : registerCubit.imagesChanged( [ photoPath ] );
                 }, 
-                icon: const Icon( Icons.camera_alt_outlined ),
+                icon: const Icon(
+                  Icons.camera_alt_outlined,
+                  semanticLabel: 'Take Photo'
+                ),
                 iconSize: 40,
                 color: Colors.white,
     
@@ -172,7 +181,7 @@ class EditPetView extends StatelessWidget {
             ),
           ),
       
-          if ( (petImages.isNotEmpty || pet.images.isNotEmpty) && !petImages.contains("assets/no-photo.png") ) 
+          if ( (petImages.isNotEmpty || pet.images.isNotEmpty) && !petImages.contains("assets/no-photo.jpg") ) 
             Dots(
               cantImages: ( petImages.isEmpty ) ? pet.images.length : petImages.length,
               bulletPrimario: 10,
@@ -266,6 +275,7 @@ class EditPetView extends StatelessWidget {
                             icon: const Icon(
                               Icons.calendar_month_outlined,
                               size: 40,
+                              semanticLabel: 'Edit Birthdate',
                             )
                           ),
                         )

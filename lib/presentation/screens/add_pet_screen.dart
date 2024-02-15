@@ -119,7 +119,7 @@ class _AddPetForm extends StatelessWidget {
               ),
             ),
 
-            if ( petImages.isNotEmpty && !petImages.contains("assets/no-photo.png") ) 
+            if ( petImages.isNotEmpty && !petImages.contains("assets/no-photo.jpg") ) 
               Dots(
                 cantImages: petImages.length,
                 bulletPrimario: 10,
@@ -157,7 +157,10 @@ class _AddPetForm extends StatelessWidget {
                               registerCubit.imagesChanged( [ photoPath ] );
                       
                             }, 
-                            icon: const Icon( Icons.photo_library_outlined ),
+                            icon: const Icon(
+                              Icons.photo_library_outlined,
+                              semanticLabel: 'Select Photo'
+                            ),
                             iconSize: 40,
                             color: Colors.black,
                           ),
@@ -177,7 +180,11 @@ class _AddPetForm extends StatelessWidget {
                               if ( photoPath == null ) return;
                               registerCubit.imagesChanged( [ photoPath ] );
                             }, 
-                            icon: const Icon( Icons.camera_alt_outlined ),
+                            icon: const Icon(
+                              Icons.camera_alt_outlined,
+                              semanticLabel: 'Take Photo'
+                            
+                            ),
                             iconSize: 40,
                             color: Colors.black,
                           ),
@@ -256,6 +263,7 @@ class _AddPetForm extends StatelessWidget {
                               Icons.calendar_month_outlined,
                               size: 40,
                               // color: Color(0xff0A74D0),
+                              semanticLabel: 'Add Birthdate',
                             )
                           ),
                         )

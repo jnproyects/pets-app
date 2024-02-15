@@ -42,22 +42,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if ( isLoading ) {
       return const Scaffold(
-        body:  Center(
+        body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
-              CircularProgressIndicator( strokeWidth: 3 ),
-
-              SizedBox( height: 15 ),
-
-              Text(
-                'Loading...',
-                style: TextStyle(
-                  fontSize: 15
-                ),
+              CircularProgressIndicator(
+                strokeWidth: 4,
+                color: AppTheme.primary,
               ),
-
+              SizedBox(height: 15),
+              Text(
+                'Wait...',
+                style: TextStyle(fontSize: 15),
+              ),
             ],
           ),
         ),
@@ -128,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icons.add,
                       color: Colors.white,
                       size: 30,
+                      semanticLabel: 'add pet',
                     )
                   )
                 ),
@@ -200,7 +198,7 @@ class _MainPetsList extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CustomCard(
-                    imageUrl: ( pet.images.isNotEmpty ) ? pet.images.first : 'assets/no-photo.png',
+                    imageUrl: ( pet.images.isNotEmpty ) ? pet.images.first : 'assets/no-photo.jpg',
                     name: pet.name,
                   ),
                 ),

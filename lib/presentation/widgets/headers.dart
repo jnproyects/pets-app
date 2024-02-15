@@ -575,30 +575,30 @@ class _BackgroundWavesLeftPainter extends CustomPainter {
     lapiz.style = PaintingStyle.fill;
     lapiz.strokeWidth = 20;
 
-    lapiz2.color = const Color(0x8D086474);
+    lapiz2.color = const Color.fromARGB(141, 8, 100, 116);
     lapiz2.style = PaintingStyle.fill;
     lapiz2.strokeWidth = 20;
 
     final path = Path();
-    // final path2 = Path();
+    final path2 = Path();
 
 
-    // path.moveTo( 0, size.height * 0.4 );
-    // path.quadraticBezierTo( size.width * 0.30, size.height * 0.85, 0, size.height );
-    // path.lineTo( 0, size.height);
+    path.moveTo( 0, size.height * 0.07 );
+    path.quadraticBezierTo( size.width * 0.30, size.height * 0.15, size.width, 0 );
+    path.lineTo( 0, 0);
 
-    // path2.moveTo( 0, size.height * 0.4 );
-    // path2.quadraticBezierTo( size.width * 0.40, size.height * 0.8, 0, size.height );
-    // path2.lineTo( 0, size.height);
+    path2.moveTo( 0, size.height * 0.08 );
+    path2.quadraticBezierTo( size.width * 0.60, size.height * 0.20, size.width, 0 );
+    path2.lineTo( 0, 0 );
 
 
     // esquina superior derecha
-    path.moveTo( size.width * 0.80, 0 );
-    path.quadraticBezierTo( size.width * 0.75, size.height * 0.15, size.width, size.height * 0.13 );
-    path.lineTo( size.width, 0 );
+    // path.moveTo( size.width * 0.80, 0 );
+    // path.quadraticBezierTo( size.width * 0.75, size.height * 0.15, size.width, size.height * 0.13 );
+    // path.lineTo( size.width, 0 );
 
     canvas.drawPath(path, lapiz);
-    // canvas.drawPath(path2, lapiz2);
+    canvas.drawPath(path2, lapiz2);
   }
 
   @override
